@@ -6,6 +6,10 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [tanstackRouter({ target: 'react', autoCodeSplitting: true }), react(), tailwindcss()],
+  server: {
+    // Test and audit reports contain HTML; changes there would full-reload pages mid-test.
+    watch: { ignored: ['**/playwright-report/**', '**/test-results/**', '**/.lighthouseci/**'] },
+  },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

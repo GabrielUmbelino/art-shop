@@ -20,6 +20,8 @@ export default defineConfig({
     {
       name: 'mobile',
       use: { ...devices['Pixel 7'], viewport: { width: 390, height: 844 } },
+      // Mock API checks are viewport independent.
+      testIgnore: 'mock-api.spec.ts',
     },
   ],
   webServer: {

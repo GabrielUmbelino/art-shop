@@ -21,11 +21,11 @@ Status legend: `[ ]` todo · `[~]` in progress · `[x]` done. Each phase ends wi
 | Forms | react-hook-form + zod resolver (shadcn Form) | Field-level errors + API errors mapped to fields |
 | Money | ETH as decimal **strings** on the wire; math with `big.js` via a `src/lib/money.ts` helper; never `number` | Precision requirement (§3 Cart) |
 | Mocks | MSW 2.x (REST; pinned to 2.x because `@mswjs/socket.io-binding` 0.2 peers on `msw@^2`) + `@mswjs/socket.io-binding` (events), backed by one in-memory mock DB persisted to `localStorage` | Consistent state across resources, survives refresh, resettable (§6) |
-| Realtime | `socket.io-client` with `transports: ['websocket']` | MSW intercepts WebSocket; polling would bypass the binding (documented limitation) |
+| Realtime | `socket.io-client` with `transports: ['websocket']` on path `/realtime/` | MSW intercepts WebSocket; polling would bypass the binding. MSW strips the default `/socket.io/` prefix before matching, which would collide with Vite's HMR socket (documented in `docs/API.md`) |
 | Session | Opaque bearer token issued by mock API, stored in `localStorage`, sent via Axios interceptor and socket `auth` | Recoverable after refresh, expirable by scenario |
 | Passwords | Mock DB stores salted SHA-256 (Web Crypto), never plain text | §3 Account and session |
 | Mock activation | `VITE_ENABLE_MOCKS=true` (on in dev and demo/deploy build) | §6 "enabled by configuration" |
-| Scenarios | Selected via `?scenario=<name>` (persisted), a small dev panel, and `window.__mock` control API used by Playwright | Deterministic, reproducible |
+| Scenarios | Selected via `?scenario=<name>` (persisted), a small dev panel (Phase 2, with the app shell), and `window.__mock` control API used by Playwright | Deterministic, reproducible |
 | Tests | Playwright (Chromium, desktop 1440 + mobile 390), visual baselines committed | §9 |
 | Audit | `@lhci/cli` with versioned `lighthouserc.cjs`, 3 runs, median | §10 |
 | Deploy | Vercel, SPA rewrite to `index.html` | §12 |
@@ -73,24 +73,24 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] Scaffold Vite React-TS with pnpm; strict `tsconfig`; oxlint (react, typescript, jsx-a11y plugins; Vite template default) + Prettier
 - [x] Install stack: TanStack Router (+ vite plugin), TanStack Query (+ devtools), Axios, Tailwind v4, shadcn/ui init, MSW, socket.io-client, @mswjs/socket.io-binding, zod, react-hook-form, big.js, Playwright, @lhci/cli
 - [x] Scripts: `dev`, `dev:nomocks`, `build`, `preview`, `typecheck`, `lint`, `format`, `test:e2e`, `test:e2e:update`, `lighthouse` (config lands in Phase 8). Mock reset is exposed in the browser (`window.__mock`, Phase 1), not as a script
-- [ ] **BLOCKED: Figma extraction** (via Figma MCP): list all frames (desktop + mobile), pull design tokens (colors, type scale, spacing, radii, shadows), fonts, and download image assets into `public/assets`. Record the frame → route map in `docs/FIGMA.md`
-- [ ] Theme Tailwind + shadcn with the extracted tokens; self-host fonts (`font-display: swap`)
+- [x] **Design extraction** from the SVG exports in `screens/` (the Figma MCP has no access to the file): frames, tokens, fonts, assets into `public/assets`, frame → route map, components and design/contract gaps in `docs/FIGMA.md`
+- [x] Theme Tailwind + shadcn with the extracted tokens (dark only); self-host Roboto Mono (`@fontsource-variable/roboto-mono`, `font-display: swap`)
 - **Checkpoint:** app boots, empty routes render, typecheck/lint green (done: `e2e/smoke.spec.ts` green on desktop + mobile)
-- **Blocker:** the Figma MCP returns "no edit access" for the challenge file, so Figma extraction and theming are on hold. Fix: duplicate the file into a Figma account that has a Full seat and share the new URL, or get edit access to the original. Until then the app uses shadcn's default `radix-nova` theme with Geist.
+- **Design source:** `screens/*.svg` (exported from Figma) replaces the Figma MCP, which returns "no edit access". Open: confirm the font (inferred as Roboto Mono) and resolve the design/contract gaps listed in `docs/FIGMA.md` before Phase 2
 
 ### Phase 1 — Contracts & mock backend
-- [ ] zod contracts for: auth/session, user/profile, NFT (with editions, `version`, price as string), list query + paginated response, favorites, cart, quote, order (status `pending | confirmed | refused`, receipt snapshot), wallets, error envelope `{ code, message, fieldErrors? }`
-- [ ] Error codes: `VALIDATION_ERROR` 422, `UNAUTHENTICATED` / `SESSION_EXPIRED` 401, `FORBIDDEN` 403, `NOT_FOUND` 404, `CONFLICT` / `OUT_OF_STOCK` / `PRICE_CHANGED` / `IDEMPOTENCY_CONFLICT` 409, `TRANSIENT` 503
-- [ ] Mock DB: seed with ≥ 40 NFTs (varied categories, collections, price ranges, editions incl. sold out), 2+ users, wallets, coupons (valid / invalid / expired); persistence to `localStorage`; `reset()` restores seed exactly
-- [ ] REST handlers (§5): auth (signup, login, session, logout), NFTs list (search/filters/sort/page) + detail, favorites, cart (guest cart token + user cart, merge on login), quote, orders (idempotency key: same key+body → same order; same key+different body → 409), profile (+ avatar upload as data URL, password change), wallets
-- [ ] Network/scenario layer: latency (fixed/variable), out-of-order responses, timeouts, offline, forced 4xx/5xx per route, session expiry, price change / sold out mid-purchase, order timeout after creation, payment confirmed/refused
-- [ ] Socket handlers with `@mswjs/socket.io-binding`: authenticate by handshake token, emit `nft.updated` and `order.updated` **from mock DB changes** (so REST and events never diverge); control API to trigger, duplicate, and replay stale events
-- [ ] `window.__mock` control API (scenario select, reset, trigger event, advance order) — exposed only when mocks are enabled
-- [ ] `docs/API.md`: endpoints, payloads, errors, event envelope `{ id, type, resourceId, version, occurredAt, payload }`, transport limitations
-- **Checkpoint:** handlers covered by a quick smoke spec in Playwright hitting the API through the app's Axios client
+- [x] zod contracts for: auth/session, user/profile, NFT (with editions, `version`, price as string), list query + paginated response, favorites, cart, quote, order (status `pending | confirmed | refused`, receipt snapshot), wallets, error envelope `{ code, message, fieldErrors? }`
+- [x] Error codes: `VALIDATION_ERROR` / `COUPON_INVALID` / `COUPON_EXPIRED` 422, `UNAUTHENTICATED` / `SESSION_EXPIRED` 401, `FORBIDDEN` 403, `NOT_FOUND` 404, `CONFLICT` / `OUT_OF_STOCK` / `QUOTE_CHANGED` / `IDEMPOTENCY_CONFLICT` / `WALLET_REJECTED` / `WALLET_NOT_CONNECTED` 409, `TRANSIENT` 503. A single `QUOTE_CHANGED` (carrying the new quote) covers price, availability, coupon and fee changes at submission
+- [x] Mock DB: seed with ≥ 40 NFTs (varied categories, collections, price ranges, editions incl. sold out), 2+ users, wallets, coupons (valid / invalid / expired); persistence to `localStorage`; `reset()` restores seed exactly
+- [x] REST handlers (§5): auth (signup, login, session, logout), NFTs list (search/filters/sort/page) + detail, favorites, cart (guest cart token + user cart, merge on login), quote, orders (idempotency key: same key+body → same order; same key+different body → 409), profile (+ avatar upload as data URL, password change), wallets
+- [x] Network/scenario layer: latency (fixed/variable), out-of-order responses, timeouts, offline, forced 4xx/5xx per route, session expiry, price change / sold out mid-purchase, order timeout after creation, payment confirmed/refused
+- [x] Socket handlers with `@mswjs/socket.io-binding`: authenticate by handshake token, emit `nft.updated` and `order.updated` **from mock DB changes** (so REST and events never diverge); control API to trigger, duplicate, and replay stale events
+- [x] `window.__mock` control API (scenario select, reset, trigger event, advance order) — exposed only when mocks are enabled
+- [x] `docs/API.md`: endpoints, payloads, errors, event envelope `{ id, type, resourceId, version, occurredAt, payload }`, transport limitations
+- **Checkpoint:** `e2e/mock-api.spec.ts` covers every resource, scenario hooks, idempotency, socket delivery/scoping/duplicates/reconnect and reset. REST is called with `fetch` from the page (through the MSW service worker); sockets use the real `socket.io-client` bundle injected into the page. The app's Axios client arrives in Phase 2, so its coverage moves there (done: 32/32 green, twice in a row)
 
 ### Phase 2 — App shell, client data layer, auth
-- [ ] Axios instance: base URL, bearer token, `AbortSignal` from Query, normalise errors into a typed `ApiError`; 401 → session-expired flow
+- [ ] Axios instance: base URL, bearer token, `AbortSignal` from Query, normalise errors into a typed `ApiError`; 401 → session-expired flow; `paramsSerializer: { indexes: null }` so arrays go out as `category=a&category=b` (what the mock API expects); `X-Cart-Id` header for guests
 - [ ] Query key factory scoped by user id (`['user', userId, …]`) for private data; QueryClient defaults (staleTime, retry only on `TRANSIENT`/network, no retry on 4xx) — documented
 - [ ] Router: root layout (header, footer, toaster, live region), `notFound` route, `beforeLoad` auth guard that redirects to `/login?redirect=…`
 - [ ] Auth: signup (validation + email conflict), login (validation, redirect back), session restore on boot, logout and user switch → `queryClient.clear()` of private keys, socket disconnect, guest cart reset

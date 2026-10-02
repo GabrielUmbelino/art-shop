@@ -4,15 +4,15 @@ NFT Marketplace frontend challenge: React + TypeScript app with fully simulated 
 
 - Requirements: `docs/REQUIREMENTS.md` (English translation of the original spec). Read the relevant section before starting a feature.
 - Work plan: `docs/PLAN.md`. Follow its phases in order; update checkboxes (`[~]` when starting, `[x]` when done) as you go.
-- Design: [Figma](https://www.figma.com/design/Ff0SksUi7UFtPWUO8kyNtw/Frontend-Challenge?node-id=0-1). Frame → route map lives in `docs/FIGMA.md`.
+- Design: SVG exports of the [Figma file](https://www.figma.com/design/Ff0SksUi7UFtPWUO8kyNtw/Frontend-Challenge?node-id=0-1) in `screens/`. Tokens, frame → route map, components and gaps live in `docs/FIGMA.md`.
 
 ## Workflow
 
-- Before building or changing any screen, pull the matching Figma frame (desktop and mobile) with the Figma MCP tools and match tokens, spacing and composition. Don't guess visuals.
+- Before building or changing any screen, render the matching export from `screens/` (desktop and mobile) and match tokens, spacing and composition (see `docs/FIGMA.md`). The Figma MCP has no access to the file. Don't guess visuals.
 - Work one phase at a time. At each phase checkpoint, run `pnpm typecheck && pnpm lint` plus the related Playwright specs, then stop and summarise for the user before starting the next phase.
 - Ask before: adding a dependency outside the stack in `docs/PLAN.md`, deviating from Figma, changing a contract that is already in use, pushing to a remote, or deploying.
 - Record every Figma deviation, asset substitution, a11y adjustment or known limitation in `ARCHITECTURE.md` when it happens, not at the end.
-- Code, comments, commits and docs in English. UI copy follows the Figma.
+- Code, comments, commits and docs in English. UI copy follows the Figma, which is in Portuguese (pt-BR).
 
 ## Commands
 
