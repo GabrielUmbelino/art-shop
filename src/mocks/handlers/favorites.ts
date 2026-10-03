@@ -15,7 +15,7 @@ export const favoriteHandlers = [
   http.put('/api/favorites/:nftId', ({ request, params }) => {
     const user = requireUser(request)
     const nftId = params.nftId as string
-    if (!findNft(nftId)) fail('NOT_FOUND', { message: 'This NFT does not exist' })
+    if (!findNft(nftId)) fail('NOT_FOUND', { message: 'Este NFT não existe' })
     const ids = (db.favorites[user.id] ??= [])
     if (!ids.includes(nftId)) ids.push(nftId)
     save()

@@ -117,8 +117,8 @@ export function resolveOrder(orderId: string, outcome: 'confirmed' | 'refused') 
   if (outcome === 'refused' || soldOut) {
     order.status = 'refused'
     order.refusalReason = soldOut
-      ? 'An edition sold out before the payment was confirmed'
-      : 'The payment was declined by the wallet'
+      ? 'Uma edição esgotou antes da confirmação do pagamento'
+      : 'O pagamento foi recusado pela carteira'
   } else {
     for (const line of order.lines) {
       const edition = findNft(line.nftId)!.editions.find((e) => e.id === line.editionId)!

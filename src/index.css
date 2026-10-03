@@ -71,6 +71,12 @@
   --radius: 0.5rem;
 }
 
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -81,4 +87,12 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Page content column: 1200px on desktop (120px margins in the 1440 frame), 18px gutters on mobile. */
+@utility page-container {
+  width: 100%;
+  max-width: calc(1200px + 2 * 18px);
+  margin-inline: auto;
+  padding-inline: 18px;
 }

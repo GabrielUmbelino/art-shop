@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { api, injectSocketIo, login, start } from './support'
+import { api, injectSocketIo, login, reload, start } from './support'
 
 declare global {
   interface Window {
@@ -60,7 +60,7 @@ test('auth: login, signup conflict, session expiry, logout', async ({ page }) =>
   ).toMatchObject({ status: 422, body: { code: 'VALIDATION_ERROR' } })
 
   const conflict = await api(page, 'POST', '/api/auth/signup', {
-    body: { name: 'Ana', username: 'ana2', email: 'ana@example.com', password: 'Secret123' },
+    body: { username: 'ana2', email: 'ana@example.com', password: 'Secret123' },
   })
   expect(conflict).toMatchObject({
     status: 409,
@@ -73,7 +73,6 @@ test('auth: login, signup conflict, session expiry, logout', async ({ page }) =>
     '/api/auth/signup',
     {
       body: {
-        name: 'Carla Dias',
         username: 'carla',
         email: 'carla@example.com',
         password: 'Secret123',
@@ -113,7 +112,7 @@ test('favorites: auth required, injected failure, persistence across reload', as
   const added = await api<{ items: Summary[] }>(page, 'PUT', '/api/favorites/nft-005', { token })
   expect(added.body.items.map((i) => i.id)).toEqual(['nft-003', 'nft-012', 'nft-005'])
 
-  await page.reload()
+  await reload(page)
   const after = await api<{ items: Summary[] }>(page, 'GET', '/api/favorites', { token })
   expect(after.body.items.map((i) => i.id)).toContain('nft-005')
 })

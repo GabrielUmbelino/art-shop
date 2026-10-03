@@ -27,7 +27,7 @@ export const orderHandlers = [
   http.post('/api/orders', async ({ request }) => {
     const user = requireUser(request)
     const key = request.headers.get('Idempotency-Key')
-    if (!key) fail('VALIDATION_ERROR', { message: 'Missing Idempotency-Key header' })
+    if (!key) fail('VALIDATION_ERROR', { message: 'Cabeçalho Idempotency-Key ausente' })
     const input = await body(request, createOrderBody)
     const requestFingerprint = fingerprint(input)
 
@@ -38,14 +38,14 @@ export const orderHandlers = [
     }
 
     const cart = Object.values(db.carts).find((c) => c.userId === user.id)
-    if (!cart?.items.length) fail('QUOTE_CHANGED', { message: 'Your cart is empty' })
+    if (!cart?.items.length) fail('QUOTE_CHANGED', { message: 'Seu carrinho está vazio' })
     applyCheckoutScenario(cart)
 
     const quote = computeQuote(cart, input.network)
     if (!quote.valid || quote.id !== input.quoteId) fail('QUOTE_CHANGED', { details: { quote } })
 
     const wallet = db.wallets.find((w) => w.id === input.walletId && w.userId === user.id)
-    if (!wallet) fail('NOT_FOUND', { message: 'This wallet does not exist' })
+    if (!wallet) fail('NOT_FOUND', { message: 'Esta carteira não existe' })
     if (db.walletConnections[wallet.id]?.network !== input.network) fail('WALLET_NOT_CONNECTED')
 
     const timestamp = now()
@@ -100,7 +100,7 @@ export const orderHandlers = [
     const user = requireUser(request)
     const order =
       db.orders.find((o) => o.id === params.id) ??
-      fail('NOT_FOUND', { message: 'This order does not exist' })
+      fail('NOT_FOUND', { message: 'Este pedido não existe' })
     if (order.userId !== user.id) fail('FORBIDDEN')
     return HttpResponse.json(toOrder(order))
   }),

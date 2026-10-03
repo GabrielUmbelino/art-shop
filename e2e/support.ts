@@ -6,9 +6,16 @@ import type {} from '../src/mocks/control'
 
 /** Opens the app on a fresh mock database with the given scenario. */
 export async function start(page: Page, scenario: ScenarioName = 'fast') {
+  await page.addInitScript(() => localStorage.setItem('nft-mock:panel', 'hidden'))
   await page.goto(`/?scenario=${scenario}`)
   await page.waitForFunction(() => window.__mock !== undefined)
   await page.evaluate((name) => window.__mock.reset(name), scenario)
+}
+
+/** Reloads and waits until the mocks are serving again (requests sent earlier would reach Vite). */
+export async function reload(page: Page) {
+  await page.reload()
+  await page.waitForFunction(() => window.__mock !== undefined)
 }
 
 type ApiOptions = { body?: unknown; token?: string; headers?: Record<string, string> }

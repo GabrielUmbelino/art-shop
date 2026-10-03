@@ -68,7 +68,7 @@ export const nftHandlers = [
 
   http.get('/api/nfts/:id', ({ params }) => {
     const record =
-      findNft(params.id as string) ?? fail('NOT_FOUND', { message: 'This NFT does not exist' })
+      findNft(params.id as string) ?? fail('NOT_FOUND', { message: 'Este NFT não existe' })
     return HttpResponse.json(toNft(record))
   }),
 ]

@@ -22,7 +22,7 @@ export const profileHandlers = [
     const input = await body(request, passwordChangeBody)
     if ((await hashPassword(user.passwordSalt, input.currentPassword)) !== user.passwordHash)
       fail('VALIDATION_ERROR', {
-        fieldErrors: { currentPassword: 'Current password is incorrect' },
+        fieldErrors: { currentPassword: 'Senha atual incorreta' },
       })
     user.passwordSalt = crypto.randomUUID()
     user.passwordHash = await hashPassword(user.passwordSalt, input.newPassword)

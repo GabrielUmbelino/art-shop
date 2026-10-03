@@ -1,27 +1,35 @@
 import { expect, test } from '@playwright/test'
+import { start } from './support'
 
-const routes = [
-  ['/', 'Home'],
+const publicRoutes = [
+  ['/', 'Seja dono do futuro da arte digital'],
   ['/nft/1', 'NFT details'],
   ['/cart', 'Cart'],
-  ['/checkout', 'Payment'],
-  ['/orders/1', 'Order confirmation'],
-  ['/login', 'Login'],
-  ['/signup', 'Sign up'],
-  ['/profile', 'Profile'],
-  ['/wallets', 'Wallets'],
 ] as const
 
-for (const [path, heading] of routes) {
+const privateRoutes = ['/checkout', '/orders/1', '/profile', '/wallets', '/favorites']
+
+for (const [path, heading] of publicRoutes) {
   test(`renders ${path}`, async ({ page }) => {
+    await start(page)
     await page.goto(path)
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
   })
 }
 
+for (const path of privateRoutes) {
+  test(`${path} requires a session`, async ({ page }) => {
+    await start(page)
+    await page.goto(path)
+    await expect(page).toHaveURL(`/login?redirect=${encodeURIComponent(path)}`)
+    await expect(page.getByRole('dialog')).toBeVisible()
+  })
+}
+
 test('unknown route shows not found', async ({ page }) => {
+  await start(page)
   await page.goto('/does-not-exist')
-  await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'Página não encontrada' })).toBeVisible()
 })
 
 test('mock service worker is active', async ({ page }) => {

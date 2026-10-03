@@ -17,11 +17,14 @@ export type Wallet = z.infer<typeof wallet>
 
 export const walletBody = z.object({
   slot: walletSlot,
-  label: z.string().trim().min(1, 'Enter a label').max(40, 'Keep it under 40 characters'),
+  label: z.string().trim().min(1, 'Informe um apelido').max(40, 'Use no máximo 40 caracteres'),
   provider: walletProvider,
   address: z
     .string()
-    .regex(/^0x[a-fA-F0-9]{40}$/, 'Enter a valid address (0x followed by 40 hex characters)'),
+    .regex(
+      /^0x[a-fA-F0-9]{40}$/,
+      'Informe um endereço válido (0x seguido de 40 caracteres hexadecimais)',
+    ),
 })
 export type WalletBody = z.infer<typeof walletBody>
 

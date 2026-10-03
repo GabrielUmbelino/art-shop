@@ -8,8 +8,12 @@ import './index.css'
 
 async function enableMocks() {
   if (import.meta.env.VITE_ENABLE_MOCKS !== 'true') return
-  const { startMocks } = await import('@/mocks/browser')
+  const [{ startMocks }, { mountMockPanel }] = await Promise.all([
+    import('@/mocks/browser'),
+    import('@/mocks/panel'),
+  ])
   await startMocks()
+  mountMockPanel()
 }
 
 await enableMocks()

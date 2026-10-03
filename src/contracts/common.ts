@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 /** ETH amount as a decimal string, up to 18 decimals. Never a number. */
-export const ethAmount = z.string().regex(/^\d+(\.\d{1,18})?$/, 'Invalid ETH amount')
+export const ethAmount = z.string().regex(/^\d+(\.\d{1,18})?$/, 'Valor em ETH inválido')
 
 export const isoDate = z.iso.datetime()
 

@@ -90,13 +90,14 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** `e2e/mock-api.spec.ts` covers every resource, scenario hooks, idempotency, socket delivery/scoping/duplicates/reconnect and reset. REST is called with `fetch` from the page (through the MSW service worker); sockets use the real `socket.io-client` bundle injected into the page. The app's Axios client arrives in Phase 2, so its coverage moves there (done: 32/32 green, twice in a row)
 
 ### Phase 2 — App shell, client data layer, auth
-- [ ] Axios instance: base URL, bearer token, `AbortSignal` from Query, normalise errors into a typed `ApiError`; 401 → session-expired flow; `paramsSerializer: { indexes: null }` so arrays go out as `category=a&category=b` (what the mock API expects); `X-Cart-Id` header for guests
-- [ ] Query key factory scoped by user id (`['user', userId, …]`) for private data; QueryClient defaults (staleTime, retry only on `TRANSIENT`/network, no retry on 4xx) — documented
-- [ ] Router: root layout (header, footer, toaster, live region), `notFound` route, `beforeLoad` auth guard that redirects to `/login?redirect=…`
-- [ ] Auth: signup (validation + email conflict), login (validation, redirect back), session restore on boot, logout and user switch → `queryClient.clear()` of private keys, socket disconnect, guest cart reset
-- [ ] Session expiry during navigation and checkout: preserve context (route + checkout draft) and resume after re-login
-- [ ] Shared skeleton component with shimmer, fixed dimensions, `prefers-reduced-motion` respected
-- **Checkpoint:** E2E #3 (signup/login/expiry/logout/switch) green
+- [x] Axios instance (`src/api/http.ts`): base URL, bearer token, `AbortSignal` from Query, 10 s timeout, errors normalised into a typed `ApiError` (`NETWORK`/`TIMEOUT` for requests without an answer); a 401 ends the session; `paramsSerializer: { indexes: null }`. Guest `X-Cart-Id` moves to Phase 4 with the cart
+- [x] Private query keys under `['private', userId, …]` (`src/api/keys.ts`); QueryClient defaults: 30 s staleTime, retry only `TRANSIENT`/`NETWORK`/`TIMEOUT` (max 2), no mutation retries
+- [x] Router: root layout (skip link, header, footer, mobile tab bar, toaster, live region, devtools in dev), 404 page, pathless `_authenticated` layout whose guard redirects to `/login?redirect=…`
+- [x] Auth: sign-up (validation, confirm password, conflicts on fields), login (validation, invalid credentials, redirect back), session restore on refresh, logout and user switch drop all private cache and replace the socket. Login and sign-up are a dialog over home on desktop and full pages on mobile, as designed. Guest cart reset/merge moves to Phase 4
+- [x] Session expiry during navigation: toast, redirect to `/login?redirect=…&reason=expired`, return after login. The checkout draft part lands with checkout in Phase 5
+- [x] Shared skeleton with shimmer, `prefers-reduced-motion` respected
+- [x] Mock scenario panel (`src/mocks/panel.tsx`), mounted outside the app tree; hidden in tests
+- **Checkpoint:** `e2e/auth.spec.ts` (E2E #3) and the updated smoke spec green on desktop and mobile
 
 ### Phase 3 — Catalog & NFT detail
 - [ ] Home: highlights section, catalog grid, search, combinable filters, sort, pagination — all in URL search params; filter change resets page; back/forward restores state

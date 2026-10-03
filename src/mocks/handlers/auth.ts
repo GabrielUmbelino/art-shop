@@ -23,9 +23,9 @@ export function uniquenessErrors(
   const others = db.users.filter((u) => u.id !== exceptUserId)
   const fieldErrors: Record<string, string> = {}
   if (fields.email && others.some((u) => u.email.toLowerCase() === fields.email!.toLowerCase()))
-    fieldErrors.email = 'An account with this email already exists'
+    fieldErrors.email = 'Já existe uma conta com este e-mail'
   if (fields.username && others.some((u) => u.username === fields.username))
-    fieldErrors.username = 'This username is taken'
+    fieldErrors.username = 'Este nome de usuário já está em uso'
   return Object.keys(fieldErrors).length ? fieldErrors : null
 }
 
@@ -37,7 +37,7 @@ export const authHandlers = [
     const passwordSalt = crypto.randomUUID()
     const user: UserRecord = {
       id: nextId('user'),
-      name: input.name,
+      name: input.username,
       username: input.username,
       email: input.email,
       bio: '',
@@ -54,7 +54,7 @@ export const authHandlers = [
     const input = await body(request, loginBody)
     const user = db.users.find((u) => u.email.toLowerCase() === input.email.toLowerCase())
     if (!user || (await hashPassword(user.passwordSalt, input.password)) !== user.passwordHash)
-      fail('VALIDATION_ERROR', { message: 'Invalid email or password' })
+      fail('VALIDATION_ERROR', { message: 'E-mail ou senha inválidos' })
     return HttpResponse.json(startSession(user))
   }),
 

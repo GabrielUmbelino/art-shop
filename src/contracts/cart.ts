@@ -38,7 +38,9 @@ export type AddCartItemBody = z.infer<typeof addCartItemBody>
 
 export const updateCartItemBody = z.object({ quantity: z.number().int().min(1) })
 
-export const applyCouponBody = z.object({ code: z.string().trim().min(1, 'Enter a coupon code') })
+export const applyCouponBody = z.object({
+  code: z.string().trim().min(1, 'Informe um código promocional'),
+})
 
 export const mergeCartBody = z.object({ guestCartId: z.string() })
 

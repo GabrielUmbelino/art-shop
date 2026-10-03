@@ -14,24 +14,24 @@ export type User = z.infer<typeof user>
 
 const password = z
   .string()
-  .min(8, 'Use at least 8 characters')
-  .regex(/[A-Za-z]/, 'Include a letter')
-  .regex(/\d/, 'Include a number')
+  .min(8, 'Use pelo menos 8 caracteres')
+  .regex(/[A-Za-z]/, 'Inclua uma letra')
+  .regex(/\d/, 'Inclua um número')
 
-export const signupBody = z.object({
-  name: z.string().trim().min(2, 'Enter your name'),
-  username: z
-    .string()
-    .trim()
-    .regex(/^[a-z0-9_]{3,20}$/, 'Use 3-20 lowercase letters, numbers or _'),
-  email: z.email('Enter a valid email'),
-  password,
-})
+const name = z.string().trim().min(2, 'Informe seu nome de exibição')
+const username = z
+  .string()
+  .trim()
+  .regex(/^[a-z0-9_]{3,20}$/, 'Use de 3 a 20 letras minúsculas, números ou _')
+const email = z.email('Informe um e-mail válido')
+
+/** The display name starts as the username; it can be changed in the profile. */
+export const signupBody = z.object({ username, email, password })
 export type SignupBody = z.infer<typeof signupBody>
 
 export const loginBody = z.object({
-  email: z.email('Enter a valid email'),
-  password: z.string().min(1, 'Enter your password'),
+  email,
+  password: z.string().min(1, 'Informe sua senha'),
 })
 export type LoginBody = z.infer<typeof loginBody>
 
@@ -42,15 +42,17 @@ export const session = z.object({
 })
 export type Session = z.infer<typeof session>
 
-export const profileUpdateBody = signupBody
-  .pick({ name: true, username: true, email: true })
-  .extend({
-    bio: z.string().max(280, 'Keep it under 280 characters'),
+export const profileUpdateBody = z
+  .object({
+    name,
+    username,
+    email,
+    bio: z.string().max(280, 'Use no máximo 280 caracteres'),
     /** data: URL of the new avatar, or null to remove it. */
     avatarUrl: z
       .string()
-      .regex(/^data:image\/(png|jpeg|webp|gif);base64,/, 'Use a PNG, JPEG, WebP or GIF image')
-      .max(1_400_000, 'Use an image under 1 MB')
+      .regex(/^data:image\/(png|jpeg|webp|gif);base64,/, 'Use uma imagem PNG, JPEG, WebP ou GIF')
+      .max(1_400_000, 'Use uma imagem de até 1 MB')
       .nullable()
       .optional(),
   })
@@ -58,7 +60,7 @@ export const profileUpdateBody = signupBody
 export type ProfileUpdateBody = z.infer<typeof profileUpdateBody>
 
 export const passwordChangeBody = z.object({
-  currentPassword: z.string().min(1, 'Enter your current password'),
+  currentPassword: z.string().min(1, 'Informe sua senha atual'),
   newPassword: password,
 })
 export type PasswordChangeBody = z.infer<typeof passwordChangeBody>

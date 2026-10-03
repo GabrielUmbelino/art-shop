@@ -6,8 +6,8 @@ export const orderStatus = z.enum(['pending', 'confirmed', 'refused'])
 export type OrderStatus = z.infer<typeof orderStatus>
 
 export const collector = z.object({
-  fullName: z.string().trim().min(2, 'Enter your full name'),
-  email: z.email('Enter a valid email'),
+  fullName: z.string().trim().min(2, 'Informe seu nome completo'),
+  email: z.email('Informe um e-mail válido'),
 })
 
 export const createOrderBody = z.object({

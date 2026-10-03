@@ -15,7 +15,7 @@ function ownWallet(request: Request, id: string) {
   const user = requireUser(request)
   const wallet =
     db.wallets.find((w) => w.id === id) ??
-    fail('NOT_FOUND', { message: 'This wallet does not exist' })
+    fail('NOT_FOUND', { message: 'Esta carteira não existe' })
   if (wallet.userId !== user.id) fail('FORBIDDEN')
   return wallet
 }
@@ -42,9 +42,13 @@ export const walletHandlers = [
     const user = requireUser(request)
     const input = await body(request, walletBody)
     if (db.wallets.some((w) => w.userId === user.id && w.slot === input.slot))
-      fail('CONFLICT', { fieldErrors: { slot: `You already have a ${input.slot} wallet` } })
+      fail('CONFLICT', {
+        fieldErrors: {
+          slot: `Você já tem uma carteira ${input.slot === 'primary' ? 'principal' : 'secundária'}`,
+        },
+      })
     if (duplicateAddress(user.id, input.address))
-      fail('CONFLICT', { fieldErrors: { address: 'This address is already registered' } })
+      fail('CONFLICT', { fieldErrors: { address: 'Este endereço já está cadastrado' } })
     const wallet: WalletRecord = {
       id: nextId('wallet'),
       userId: user.id,
@@ -60,7 +64,7 @@ export const walletHandlers = [
     const wallet = ownWallet(request, params.id as string)
     const input = await body(request, walletUpdateBody)
     if (duplicateAddress(wallet.userId, input.address, wallet.id))
-      fail('CONFLICT', { fieldErrors: { address: 'This address is already registered' } })
+      fail('CONFLICT', { fieldErrors: { address: 'Este endereço já está cadastrado' } })
     Object.assign(wallet, input, { updatedAt: now() })
     if (input.address) delete db.walletConnections[wallet.id]
     save()

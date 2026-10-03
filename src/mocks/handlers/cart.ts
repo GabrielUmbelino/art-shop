@@ -39,8 +39,8 @@ function checkStock(item: CartRecord['items'][number]) {
     fail('OUT_OF_STOCK', {
       message:
         maxQuantity === 0
-          ? 'This edition is sold out'
-          : `Only ${maxQuantity} available for this edition`,
+          ? 'Esta edição está esgotada'
+          : `Apenas ${maxQuantity} disponíveis nesta edição`,
       details: { maxQuantity },
     })
 }
@@ -53,7 +53,7 @@ export const cartHandlers = [
     const input = await body(request, addCartItemBody)
     const nft = findNft(input.nftId)
     if (!nft?.editions.some((e) => e.id === input.editionId))
-      fail('NOT_FOUND', { message: 'This edition does not exist' })
+      fail('NOT_FOUND', { message: 'Esta edição não existe' })
     const existing = cart.items.find((i) => i.editionId === input.editionId)
     const item = existing
       ? { ...existing, quantity: existing.quantity + input.quantity }
@@ -85,9 +85,9 @@ export const cartHandlers = [
     const { code } = await body(request, applyCouponBody)
     const coupon = db.coupons.find((c) => c.code === code.toUpperCase())
     if (!coupon)
-      fail('COUPON_INVALID', { fieldErrors: { code: 'This coupon code does not exist' } })
+      fail('COUPON_INVALID', { fieldErrors: { code: 'Este código promocional não existe' } })
     if (Date.parse(coupon.expiresAt) <= Date.now())
-      fail('COUPON_EXPIRED', { fieldErrors: { code: 'This coupon has expired' } })
+      fail('COUPON_EXPIRED', { fieldErrors: { code: 'Este código promocional expirou' } })
     cart.couponCode = coupon.code
     return respond(cart)
   }),

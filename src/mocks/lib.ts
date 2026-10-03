@@ -4,20 +4,20 @@ import { errorStatus, type ApiErrorBody, type ErrorCode } from '@/contracts/comm
 import { db, type UserRecord } from './db/store'
 
 const defaultMessages: Record<ErrorCode, string> = {
-  VALIDATION_ERROR: 'Some fields are invalid',
-  UNAUTHENTICATED: 'Sign in to continue',
-  SESSION_EXPIRED: 'Your session has expired. Sign in again',
-  FORBIDDEN: 'You do not have access to this resource',
-  NOT_FOUND: 'Not found',
-  CONFLICT: 'This conflicts with existing data',
-  OUT_OF_STOCK: 'Not enough units available',
-  QUOTE_CHANGED: 'Prices or availability changed. Review your order',
-  IDEMPOTENCY_CONFLICT: 'This idempotency key was already used for a different request',
-  COUPON_INVALID: 'This coupon code does not exist',
-  COUPON_EXPIRED: 'This coupon has expired',
-  WALLET_REJECTED: 'The wallet rejected the connection request',
-  WALLET_NOT_CONNECTED: 'Connect your wallet on the selected network',
-  TRANSIENT: 'Service temporarily unavailable. Try again',
+  VALIDATION_ERROR: 'Alguns campos estão inválidos',
+  UNAUTHENTICATED: 'Entre para continuar',
+  SESSION_EXPIRED: 'Sua sessão expirou. Entre novamente',
+  FORBIDDEN: 'Você não tem acesso a este recurso',
+  NOT_FOUND: 'Não encontrado',
+  CONFLICT: 'Conflito com dados existentes',
+  OUT_OF_STOCK: 'Quantidade indisponível',
+  QUOTE_CHANGED: 'Preços ou disponibilidade mudaram. Revise seu pedido',
+  IDEMPOTENCY_CONFLICT: 'Esta chave de idempotência já foi usada em outra requisição',
+  COUPON_INVALID: 'Este código promocional não existe',
+  COUPON_EXPIRED: 'Este código promocional expirou',
+  WALLET_REJECTED: 'A carteira recusou a conexão',
+  WALLET_NOT_CONNECTED: 'Conecte sua carteira na rede selecionada',
+  TRANSIENT: 'Serviço temporariamente indisponível. Tente novamente',
 }
 
 export function apiError(code: ErrorCode, extra: Partial<Omit<ApiErrorBody, 'code'>> = {}) {
