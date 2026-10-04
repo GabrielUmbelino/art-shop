@@ -1,4 +1,5 @@
-import type { Cart, NetworkInfo, Network } from '@/contracts/cart'
+import type { Cart, NetworkInfo } from '@/contracts/cart'
+import type { Network } from '@/contracts/common'
 import type { Nft } from '@/contracts/nft'
 import type { Order } from '@/contracts/order'
 import type { User } from '@/contracts/user'
@@ -22,7 +23,7 @@ export type OrderRecord = Order & { userId: string; idempotencyKey: string; fing
 export type WalletRecord = Wallet & { userId: string }
 
 export type Db = {
-  schemaVersion: 1
+  schemaVersion: 2
   scenario: ScenarioName
   config: MockConfig
   seq: number
@@ -50,7 +51,7 @@ function create(scenario: ScenarioName): Db {
 function load(): Db | null {
   try {
     const stored = JSON.parse(localStorage.getItem(DB_KEY) ?? 'null') as Db | null
-    return stored?.schemaVersion === 1 ? stored : null
+    return stored?.schemaVersion === 2 ? stored : null
   } catch {
     return null
   }

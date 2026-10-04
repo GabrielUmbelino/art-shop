@@ -55,15 +55,30 @@ A session is `{ token, expiresAt, user }`. Sessions expire after 30 minutes (one
 
 | Method and path | Response |
 | --- | --- |
-| `GET /nfts?q&category&minPrice&maxPrice&availableOnly&sort&page&pageSize` | 200 `nftList` (paginated `nftSummary`) |
+| `GET /nfts?q&category&network&collection&minPrice&maxPrice&availableOnly&tab&sort&page&pageSize` | 200 `nftList` (paginated `nftSummary`) |
+| `GET /nfts/facets` | 200 `nftFacets`: counts per category and network, catalog price bounds |
 | `GET /nfts/featured` | 200 `nftSummary[]` |
 | `GET /nfts/:id` | 200 `nft`, 404 |
 
-- `category` repeats for multiple values (`category=art&category=music`). Filters combine with AND.
-- `sort` is one of `newest` (default), `price-asc`, `price-desc` or `name`. `pageSize` defaults to 12 (max 48).
-- `price` is the lowest price among editions that are still available. `available` is the sum across editions.
-- Each NFT has 1 to 3 editions (`editions[]`), each with its own `price`, `supply` and `available`. An edition with `available: 0` is unavailable. `maxPerOrder` caps the quantity of one edition per order.
-- `version` increases on every change and matches the `nft.updated` event version.
+- **Filters:**
+  - `q` matches the name, collection or creator.
+  - `category` and `network` repeat for multiple values (`category=music&category=gaming`).
+  - Filters combine with AND. Values within one filter combine with OR.
+- **Tabs:** `tab` is `all` (default), `new` (new releases) or `trending`.
+- **Sort:** `sort` is `newest` (default), `price-asc`, `price-desc` or `name`.
+- **Page size:** `pageSize` defaults to 9 (the design's 3 × 3 grid), max 48.
+- **Categories:** `digital-art`, `photography`, `music`, `3d`, `collectibles`, `generative`, `gaming`, `subscriptions`, `utility`.
+- **Networks:** `ethereum`, `polygon`, `solana`.
+- **Price fields:**
+  - `price` is the lowest price among the editions still available.
+  - `compareAtPrice` is an optional previous price, shown struck through.
+  - `available` is the sum across editions.
+- **Editions:** each NFT has up to 4: `1/1`, `1/10`, `1/50` and `Aberta`.
+  - The open edition has `supply: null`.
+  - An edition with `available: 0` is unavailable.
+  - `maxPerOrder` (10) caps the quantity of one edition per order.
+- **Details only:** `description`, `images`, `editions`, `attributes`, `contractAddress`, `royaltyPercent`, `rating` and `reviews` come only with `GET /nfts/:id`.
+- **Version:** `version` increases on every change and matches the `nft.updated` event version.
 
 ### Favorites (`nft.ts`)
 
@@ -208,16 +223,18 @@ Every event has the same envelope:
 
 ### Seed data
 
-- 48 NFTs across 6 categories, 6 collections and 6 creators. Every 7th NFT is sold out, and every 5th has its last edition sold out.
-- Two users, both with the password `Collector123`:
+- **NFTs:** 48, across 9 categories, 3 networks, 6 collections and 6 creators.
+  - The first 9 reproduce the design's catalog grid (Emerald Ape #042, Sage Nomad #009, Neon Vessel #552...).
+  - From item 10 on, every 7th NFT is sold out and every 5th has its `1/10` edition sold out. Example: `nft-005` has a sold-out `1/10` edition and `nft-014` is fully sold out.
+- **Users:** two, both with the password `Collector123`:
   - `ana@example.com` has 1 wallet and 2 favorites.
   - `bruno@example.com` has 2 wallets.
-- Coupons:
+- **Coupons:**
   - `WELCOME10`: 10%
   - `COLLECTOR25`: 25%
   - `SUMMER20`: expired
-- Network fees:
-  - Ethereum: 0.0024 ETH
-  - Polygon: 0.0002 ETH
-  - Base: 0.0004 ETH
-- NFT and creator images are generated placeholders in `public/assets/`. They will be replaced once the Figma assets are available.
+- **Network fees** (the Ethereum fee matches the design):
+  - Ethereum: 0.016 ETH
+  - Polygon: 0.002 ETH
+  - Solana: 0.001 ETH
+- **Images:** NFT artwork is the four images from the design exports. Creator avatars are generated placeholders.

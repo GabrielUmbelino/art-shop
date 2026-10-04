@@ -1,6 +1,5 @@
 import { z } from 'zod'
-import { ethAmount, isoDate } from './common'
-import { network } from './cart'
+import { ethAmount, isoDate, network } from './common'
 
 export const orderStatus = z.enum(['pending', 'confirmed', 'refused'])
 export type OrderStatus = z.infer<typeof orderStatus>

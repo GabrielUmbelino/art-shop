@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { HeartIcon, HouseIcon, ShoppingBasketIcon, ShoppingCartIcon, UserIcon } from 'lucide-react'
 
 const item =
@@ -7,6 +7,8 @@ const active = { className: 'text-highlight', 'aria-current': 'page' as const }
 
 /** Bottom tab bar from the mobile home design; icons are filled as designed. */
 export function MobileNav() {
+  // The NFT page has its own fixed purchase panel instead (as designed).
+  if (useLocation().pathname.startsWith('/nft/')) return null
   return (
     <nav
       aria-label="Principal"

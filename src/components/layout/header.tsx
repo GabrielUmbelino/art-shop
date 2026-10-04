@@ -1,9 +1,10 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { LogInIcon, SearchIcon, ShoppingCartIcon } from 'lucide-react'
+import { LogInIcon, ShoppingCartIcon } from 'lucide-react'
 import { ComingSoon } from '@/components/coming-soon'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/features/auth/use-auth'
 import { cn } from 'cn'
+import { HeaderSearch } from './header-search'
 import { UserMenu } from './user-menu'
 
 const navItem =
@@ -48,9 +49,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-6 justify-self-end">
-            <Link to="/" hash="mercado" aria-label="Buscar NFTs" className="hover:text-highlight">
-              <SearchIcon className="size-6" />
-            </Link>
+            <HeaderSearch />
             <Link to="/cart" aria-label="Carrinho" className="hover:text-highlight">
               <ShoppingCartIcon className="size-6" />
             </Link>

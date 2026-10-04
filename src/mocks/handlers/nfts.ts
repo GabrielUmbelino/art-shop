@@ -1,6 +1,14 @@
 import { http, HttpResponse } from 'msw'
-import { nftListQuery, type NftList, type NftSummary, type Nft } from '@/contracts/nft'
-import { compare } from '@/lib/money'
+import {
+  categories,
+  nftListQuery,
+  type Nft,
+  type NftFacets,
+  type NftList,
+  type NftSummary,
+} from '@/contracts/nft'
+import { networks } from '@/contracts/common'
+import { compare, max, min } from '@/lib/money'
 import { db, findNft, toNft } from '../db/store'
 import { fail, validate } from '../lib'
 
@@ -9,6 +17,11 @@ export const toSummary = ({
   images: _i,
   editions: _e,
   maxPerOrder: _m,
+  attributes: _a,
+  contractAddress: _c,
+  royaltyPercent: _r,
+  rating: _rt,
+  reviews: _rv,
   ...summary
 }: Nft): NftSummary => summary
 
@@ -18,6 +31,9 @@ function parseQuery(url: URL) {
   return validate(nftListQuery, {
     q: p.get('q') ?? undefined,
     category: p.has('category') ? p.getAll('category') : undefined,
+    network: p.has('network') ? p.getAll('network') : undefined,
+    collection: p.get('collection') ?? undefined,
+    tab: p.get('tab') ?? undefined,
     minPrice: p.get('minPrice') ?? undefined,
     maxPrice: p.get('maxPrice') ?? undefined,
     availableOnly: p.has('availableOnly') ? p.get('availableOnly') === 'true' : undefined,
@@ -47,6 +63,10 @@ export const nftHandlers = [
               field.toLowerCase().includes(q),
             )) &&
           (!query.category || query.category.includes(n.category)) &&
+          (!query.network || query.network.includes(n.network)) &&
+          (!query.collection || n.collection === query.collection) &&
+          (query.tab !== 'new' || n.isNew) &&
+          (query.tab !== 'trending' || n.trending) &&
           (!query.minPrice || compare(n.price, query.minPrice) >= 0) &&
           (!query.maxPrice || compare(n.price, query.maxPrice) <= 0) &&
           (!query.availableOnly || n.available > 0),
@@ -59,6 +79,21 @@ export const nftHandlers = [
       pageSize: query.pageSize,
       total: items.length,
       totalPages: Math.ceil(items.length / query.pageSize),
+    })
+  }),
+
+  http.get('/api/nfts/facets', () => {
+    const all = db.nfts.map(toNft)
+    const count = <K extends string>(keys: readonly K[], pick: (n: Nft) => K) =>
+      Object.fromEntries(keys.map((k) => [k, all.filter((n) => pick(n) === k).length])) as Record<
+        K,
+        number
+      >
+    const prices = all.map((n) => n.price)
+    return HttpResponse.json<NftFacets>({
+      categories: count(categories, (n) => n.category),
+      networks: count(networks, (n) => n.network),
+      price: prices.length ? { min: min(prices), max: max(prices) } : { min: '0', max: '0' },
     })
   }),
 

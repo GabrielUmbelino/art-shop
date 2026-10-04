@@ -1,4 +1,5 @@
-import type { Cart, Network, Quote } from '@/contracts/cart'
+import type { Cart, Quote } from '@/contracts/cart'
+import type { Network } from '@/contracts/common'
 import type { NftUpdatedEvent, OrderUpdatedEvent } from '@/contracts/events'
 import type { Edition } from '@/contracts/nft'
 import { add, mul, percentOf, sub } from '@/lib/money'
@@ -94,7 +95,7 @@ export function computeQuote(cart: CartRecord, network: Network): Quote {
 const explorers: Record<Network, string> = {
   ethereum: 'https://etherscan.io/tx/',
   polygon: 'https://polygonscan.com/tx/',
-  base: 'https://basescan.org/tx/',
+  solana: 'https://solscan.io/tx/',
 }
 
 function publishOrder(order: OrderRecord) {

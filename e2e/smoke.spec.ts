@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test'
 import { start } from './support'
 
 const publicRoutes = [
-  ['/', 'Seja dono do futuro da arte digital'],
-  ['/nft/1', 'NFT details'],
+  ['/', /Seja dono d[ao] (futuro da arte|cultura) digital/],
+  ['/nft/nft-001', 'Emerald Ape #042'],
   ['/cart', 'Cart'],
 ] as const
 
@@ -14,6 +14,11 @@ for (const [path, heading] of publicRoutes) {
     await start(page)
     await page.goto(path)
     await expect(page.getByRole('heading', { level: 1, name: heading })).toBeVisible()
+    // No horizontal overflow at any viewport (spec §8).
+    await page.waitForLoadState('networkidle')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
+      await page.evaluate(() => document.documentElement.clientWidth),
+    )
   })
 }
 

@@ -25,19 +25,14 @@
         "varsIgnorePattern": "^_",
         "destructuredArrayIgnorePattern": "^_"
       }
-    ]
+    ],
+    "jsx-a11y/prefer-tag-over-role": "off"
   },
   "overrides": [
     {
       "files": ["src/routes/**", "src/components/ui/**", "src/mocks/panel.tsx"],
       "rules": {
         "react/only-export-components": "off"
-      }
-    },
-    {
-      "files": ["src/components/ui/**"],
-      "rules": {
-        "jsx-a11y/prefer-tag-over-role": "off"
       }
     }
   ]

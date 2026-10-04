@@ -1,9 +1,5 @@
 import { z } from 'zod'
-import { ethAmount } from './common'
-
-export const networks = ['ethereum', 'polygon', 'base'] as const
-export const network = z.enum(networks)
-export type Network = z.infer<typeof network>
+import { ethAmount, network } from './common'
 
 export const networkInfo = z.object({ id: network, name: z.string(), fee: ethAmount })
 export type NetworkInfo = z.infer<typeof networkInfo>

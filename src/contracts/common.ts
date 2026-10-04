@@ -5,6 +5,10 @@ export const ethAmount = z.string().regex(/^\d+(\.\d{1,18})?$/, 'Valor em ETH in
 
 export const isoDate = z.iso.datetime()
 
+export const networks = ['ethereum', 'polygon', 'solana'] as const
+export const network = z.enum(networks)
+export type Network = z.infer<typeof network>
+
 export const errorCode = z.enum([
   'VALIDATION_ERROR',
   'UNAUTHENTICATED',

@@ -20,17 +20,18 @@ test('catalog: filters, sort, pagination, detail and not found', async ({ page }
   const all = await api<Page<Summary>>(page, 'GET', '/api/nfts')
   expect(all.status).toBe(200)
   expect(all.body.total).toBe(48)
-  expect(all.body.items).toHaveLength(12)
-  expect(all.body.totalPages).toBe(4)
+  expect(all.body.items).toHaveLength(9)
+  expect(all.body.totalPages).toBe(6)
 
   const filtered = await api<Page<Summary>>(
     page,
     'GET',
-    '/api/nfts?category=art&category=music&availableOnly=true&sort=price-asc&pageSize=48',
+    '/api/nfts?category=digital-art&category=music&network=ethereum&availableOnly=true&sort=price-asc&pageSize=48',
   )
   expect(filtered.body.items.length).toBeGreaterThan(0)
   for (const item of filtered.body.items) {
-    expect(['art', 'music']).toContain(item.category)
+    expect(['digital-art', 'music']).toContain(item.category)
+    expect(item).toMatchObject({ network: 'ethereum' })
     expect(item.available).toBeGreaterThan(0)
   }
   const prices = filtered.body.items.map((i) => Number(i.price))
@@ -40,7 +41,7 @@ test('catalog: filters, sort, pagination, detail and not found', async ({ page }
   expect(search.body.items.every((i) => i.id)).toBe(true)
   expect(search.body.total).toBeGreaterThan(0)
   expect((await api<Page<Summary>>(page, 'GET', '/api/nfts?q=zzzz')).body.total).toBe(0)
-  expect((await api<Page<Summary>>(page, 'GET', '/api/nfts?page=4')).body.items).toHaveLength(12)
+  expect((await api<Page<Summary>>(page, 'GET', '/api/nfts?page=4')).body.items).toHaveLength(9)
   expect((await api(page, 'GET', '/api/nfts?sort=bogus')).status).toBe(422)
 
   expect((await api<Summary[]>(page, 'GET', '/api/nfts/featured')).body).toHaveLength(4)
@@ -121,22 +122,22 @@ test('cart: guest cart, stock limit, coupons, quote math, merge on login', async
   await start(page)
   const guest = await api<{ id: string }>(page, 'GET', '/api/cart')
   const headers = { 'X-Cart-Id': guest.body.id }
-  // nft-001 Standard: price 2.5, 24 available, max 5 per order.
+  // nft-001 edition 1/50: price 1.19, 47 available, max 10 per order.
   const added = await api(page, 'POST', '/api/cart/items', {
     headers,
-    body: { nftId: 'nft-001', editionId: 'nft-001-e1', quantity: 2 },
+    body: { nftId: 'nft-001', editionId: 'nft-001-e50', quantity: 2 },
   })
   expect(added.status).toBe(200)
   expect(
     await api(page, 'POST', '/api/cart/items', {
       headers,
-      body: { nftId: 'nft-001', editionId: 'nft-001-e1', quantity: 4 },
+      body: { nftId: 'nft-001', editionId: 'nft-001-e50', quantity: 9 },
     }),
-  ).toMatchObject({ status: 409, body: { code: 'OUT_OF_STOCK', details: { maxQuantity: 5 } } })
+  ).toMatchObject({ status: 409, body: { code: 'OUT_OF_STOCK', details: { maxQuantity: 10 } } })
   expect(
     await api(page, 'POST', '/api/cart/items', {
       headers,
-      body: { nftId: 'nft-007', editionId: 'nft-007-e1', quantity: 1 },
+      body: { nftId: 'nft-014', editionId: 'nft-014-e50', quantity: 1 },
     }),
   ).toMatchObject({ status: 409, body: { code: 'OUT_OF_STOCK' } })
 
@@ -158,17 +159,17 @@ test('cart: guest cart, stock limit, coupons, quote math, merge on login', async
 
   const quote = await api(page, 'GET', '/api/cart/quote?network=ethereum', { headers })
   expect(quote.body).toMatchObject({
-    subtotal: '5',
-    discount: '0.5',
-    networkFee: '0.0024',
-    total: '4.5024',
+    subtotal: '2.38',
+    discount: '0.238',
+    networkFee: '0.016',
+    total: '2.158',
     valid: true,
   })
 
   const token = await login(page)
   await api(page, 'POST', '/api/cart/items', {
     token,
-    body: { nftId: 'nft-001', editionId: 'nft-001-e1', quantity: 4 },
+    body: { nftId: 'nft-001', editionId: 'nft-001-e50', quantity: 9 },
   })
   const merged = await api<{ items: { quantity: number }[]; couponCode: string }>(
     page,
@@ -180,7 +181,7 @@ test('cart: guest cart, stock limit, coupons, quote math, merge on login', async
     },
   )
   expect(merged.body.items).toHaveLength(1)
-  expect(merged.body.items[0].quantity).toBe(5)
+  expect(merged.body.items[0].quantity).toBe(10)
   expect(merged.body.couponCode).toBe('WELCOME10')
 })
 
@@ -188,7 +189,7 @@ async function prepareCheckout(page: import('@playwright/test').Page) {
   const token = await login(page)
   await api(page, 'POST', '/api/cart/items', {
     token,
-    body: { nftId: 'nft-001', editionId: 'nft-001-e1', quantity: 2 },
+    body: { nftId: 'nft-001', editionId: 'nft-001-e50', quantity: 2 },
   })
   await api(page, 'POST', '/api/wallets/wallet-ana-1/connect', {
     token,
@@ -237,24 +238,24 @@ test('orders: idempotency, stale quote, confirmation effects, ownership', async 
   const confirmed = await api(page, 'GET', `/api/orders/${created.body.id}`, { token })
   expect(confirmed.body).toMatchObject({
     status: 'confirmed',
-    total: '5.0024',
+    total: '2.396',
     txHash: expect.stringMatching(/^0x/),
   })
   expect(
     (await api<{ items: unknown[] }>(page, 'GET', '/api/cart', { token })).body.items,
   ).toHaveLength(0)
-  const nft = await api<{ editions: { available: number }[]; version: number }>(
+  const nft = await api<{ editions: { id: string; available: number }[]; version: number }>(
     page,
     'GET',
     '/api/nfts/nft-001',
   )
-  expect(nft.body.editions[0].available).toBe(22)
+  expect(nft.body.editions.find((e) => e.id === 'nft-001-e50')?.available).toBe(45)
   expect(nft.body.version).toBe(2)
 
   // Receipt is a snapshot: later catalog changes do not affect it.
-  await page.evaluate(() => window.__mock.updateEdition('nft-001', 'nft-001-e1', { price: '9' }))
+  await page.evaluate(() => window.__mock.updateEdition('nft-001', 'nft-001-e50', { price: '9' }))
   expect((await api(page, 'GET', `/api/orders/${created.body.id}`, { token })).body).toMatchObject({
-    total: '5.0024',
+    total: '2.396',
   })
 
   const bruno = await login(page, 'bruno@example.com')
@@ -273,7 +274,7 @@ test('orders: price change at submission requires a new quote', async ({ page })
   }>(page, 'POST', '/api/orders', { token, headers: { 'Idempotency-Key': 'k1' }, body: order })
   expect(rejected.status).toBe(409)
   expect(rejected.body.code).toBe('QUOTE_CHANGED')
-  expect(rejected.body.details.quote.subtotal).toBe('5.5')
+  expect(rejected.body.details.quote.subtotal).toBe('2.618')
   const retry = await api(page, 'POST', '/api/orders', {
     token,
     headers: { 'Idempotency-Key': 'k2' },
@@ -416,4 +417,28 @@ test('reset restores the seed', async ({ page }) => {
   const state = await page.evaluate(() => window.__mock.state())
   expect(state.favorites['user-ana']).toEqual(['nft-003', 'nft-012'])
   expect(state.sessions).toHaveLength(0)
+})
+
+test('catalog: tabs, collection filter and facets', async ({ page }) => {
+  await start(page)
+  const tab = await api<Page<Summary & { isNew: boolean }>>(
+    page,
+    'GET',
+    '/api/nfts?tab=new&pageSize=48',
+  )
+  expect(tab.body.total).toBe(12)
+  const collection = await api<Page<Summary & { collection: string }>>(
+    page,
+    'GET',
+    '/api/nfts?collection=Kurio%20Apes&pageSize=48',
+  )
+  expect(collection.body.items.every((i) => i.collection === 'Kurio Apes')).toBe(true)
+  const facets = await api<{
+    categories: Record<string, number>
+    networks: Record<string, number>
+    price: object
+  }>(page, 'GET', '/api/nfts/facets')
+  expect(Object.values(facets.body.categories).reduce((a, b) => a + b)).toBe(48)
+  expect(Object.values(facets.body.networks).reduce((a, b) => a + b)).toBe(48)
+  expect(facets.body.price).toEqual({ min: '0.02', max: '12.3' })
 })

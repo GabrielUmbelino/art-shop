@@ -60,3 +60,22 @@ export async function injectSocketIo(page: Page) {
   )
   await page.addScriptTag({ path })
 }
+
+/** Signs in through the API and reloads with the token in place (UI login is covered by auth.spec). */
+export async function signIn(page: Page, email = 'ana@example.com') {
+  const token = await login(page, email)
+  await page.evaluate((t) => localStorage.setItem('kurio:token', t), token)
+  await reload(page)
+}
+
+/** Filters live in the sidebar on desktop and in a sheet on mobile. */
+export async function filters(page: Page, isMobile: boolean) {
+  if (!isMobile) return page.getByRole('complementary', { name: 'Filtros' })
+  await page.getByRole('button', { name: 'Filtros' }).click()
+  return page.getByRole('dialog', { name: 'Filtros' })
+}
+
+export const resultCount = async (page: Page) =>
+  Number((await page.getByText(/\d+ NFTs encontrados/).textContent())?.match(/\d+/)?.[0])
+
+export const cards = (page: Page) => page.locator('#mercado ul > li article')

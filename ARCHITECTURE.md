@@ -40,4 +40,13 @@ Logged as they are introduced.
 | Header | "Mercado" points to the catalog on the home page and is active on NFT, cart, checkout and order pages | The design has no separate market page |
 | Scope | Criadores, Aprenda, social login, password recovery, newsletter, help links and social profiles show an "Em breve" notice | Out of scope; they must not appear to work |
 | Accessibility | Auth fields have visually hidden labels; the designs only show placeholders | Labels are required for assistive technology |
+| Catalog | Desktop search opens from the header's search icon (an inline field); mobile uses the designed search bar | The desktop design has a search icon but no field |
+| Catalog | Filter counts are over the whole catalog, not the current results | Matches the design's static counts; keeps filters predictable |
+| Catalog | "Limpar filtros" link and a previous-page arrow in pagination | Not in the design; needed to undo filters and to go back by keyboard |
+| Catalog | The hero carousel uses static slides (no auto-rotation) | Keeps the LCP image independent of the API; no motion without user action |
+| Catalog | Blog cards ("Diário da Cunhagem") are static teasers; "Ler mais" shows "Em breve" | Editorial pages are out of scope |
+| NFT details | The selected edition is in the URL (`?edition=`); sold-out editions are disabled pills, and a link to one shows an "unavailable" message | Direct access to an unavailable edition (spec §3) |
+| NFT details | "Contrato" shows the contract address and "Direitos autorais" the royalty text | The design has the two texts swapped |
+| NFT details | On mobile the reviews tab reads "Avaliações (19)" and the tab bar is hidden (the purchase panel takes its place) | The long label overflowed at 390px; the mobile design has no tab bar on this page |
+| Data | The first 9 seed NFTs reproduce the design's grid; generated NFTs reuse the 4 artworks | Visual fidelity and stable visual baselines |
 | Tooling | oxlint instead of ESLint; MSW pinned to 2.x | oxlint is the Vite template default; `@mswjs/socket.io-binding` 0.2 requires `msw@^2` |

@@ -1,6 +1,5 @@
 import { z } from 'zod'
-import { isoDate } from './common'
-import { network } from './cart'
+import { isoDate, network } from './common'
 
 export const walletSlot = z.enum(['primary', 'secondary'])
 export const walletProvider = z.enum(['metamask', 'coinbase', 'walletconnect'])

@@ -3,9 +3,9 @@ import {
   addCartItemBody,
   applyCouponBody,
   mergeCartBody,
-  network,
   updateCartItemBody,
 } from '@/contracts/cart'
+import { network } from '@/contracts/common'
 import { db, findNft, nextId, save, type CartRecord } from '../db/store'
 import { computeQuote, lineInfo, toCart } from '../domain'
 import { body, fail, optionalUser, requireUser, validate } from '../lib'

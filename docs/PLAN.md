@@ -100,12 +100,13 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** `e2e/auth.spec.ts` (E2E #3) and the updated smoke spec green on desktop and mobile
 
 ### Phase 3 — Catalog & NFT detail
-- [ ] Home: highlights section, catalog grid, search, combinable filters, sort, pagination — all in URL search params; filter change resets page; back/forward restores state
-- [ ] Queries keyed by params; `placeholderData: keepPreviousData`; abort obsolete requests; empty / error + retry states
-- [ ] Mobile filter drawer (focus trap, Esc, return focus)
-- [ ] NFT detail: direct access, 404 state, gallery, info, edition selector (unavailable editions disabled with reason), quantity limited by availability, favorite toggle, add to cart
-- [ ] Favorites: **optimistic update with rollback** + toast on failure; requires auth (redirect with return)
-- **Checkpoint:** E2E #1, #2, #4, #12 green
+- [x] Contracts aligned with the design: 9 categories, network per NFT (Ethereum / Polygon / Solana), tabs, previous price, rarity, editions `1/1`/`1/10`/`1/50`/`Aberta`, token id, attributes, rating and reviews; `GET /nfts/facets`; first 9 seed NFTs = the design's grid
+- [x] Home: hero, catalog grid, search (header field on desktop, search bar on mobile), combinable filters with counts, price range, tabs, sort, pagination, all in URL search params; filter change resets page; back/forward and refresh restore state; promo cards and blog teasers
+- [x] Queries keyed by params, `placeholderData: keepPreviousData`, abort on change (out-of-order safe); skeleton, empty, error + retry, background refresh states; results announced to screen readers
+- [x] Mobile filter sheet (focus trap, Esc, return focus via Radix)
+- [x] NFT detail: direct access, 404 state, gallery with zoom, info, edition pills (sold out disabled, edition in URL), quantity limited by availability and per-order cap, favorite, share links, details/reviews tabs, "Mais desta coleção"; mobile top bar and purchase panel. "Comprar" is wired in Phase 4
+- [x] Favorites: optimistic toggle with rollback + toast, signed-out redirect with return, favorites page
+- **Checkpoint:** `catalog.spec.ts` (#1, #12), `nft-detail.spec.ts` (#2), `favorites.spec.ts` (#4), smoke spec now also checks for horizontal overflow; 60/60 green on desktop and mobile (twice)
 
 ### Phase 4 — Cart
 - [ ] Cart page / drawer: change quantity (bounded), remove, coupon apply/remove (invalid/expired errors), summary (subtotal, discount, network fee, total) **from the quote API**

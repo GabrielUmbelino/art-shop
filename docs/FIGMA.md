@@ -134,20 +134,15 @@ These follow the same visual language and are documented in `ARCHITECTURE.md` as
 - Session-expired prompt.
 - Reviews tab content.
 
-## Gaps between the design and the Phase 1 contracts
+## Gaps between the design and the contracts
 
-Decisions to take before the screens are built:
+Resolved in Phase 3 by aligning the contracts with the design: 9 categories, a network on every NFT (Ethereum / Polygon / Solana, also used at checkout), catalog tabs, `compareAtPrice` and `rare`, editions named by supply with an open edition, token id, attributes, rating and reviews, contract and royalty. Sign-up was aligned in Phase 2 (no name field).
 
-| Area | Design | Current contract / seed |
-| --- | --- | --- |
-| Categories | 9: Arte digital, Fotografia, Música, Arte 3D, Colecionáveis, Generativa, Jogos, Assinaturas, Utilidade | 6 (`art`, `photography`, `music`, `gaming`, `collectibles`, `3d`) |
-| Network | NFTs belong to a network; catalog filter by Ethereum / Polygon / Solana | No network on NFTs; checkout networks are ethereum / polygon / base |
-| Catalog tabs | Todos / Novos lançamentos / Em alta | No "new" or "trending" filter |
-| Price | Optional previous price (struck through), "RARO" badge | Not modeled |
-| Editions | Named by supply: `1/1`, `1/10`, `1/50`, `ABERTA` (open) | Standard / Limited / Artist Proof |
-| NFT details | Token id, collection, attributes, rating with review count, contract and royalty text | Not modeled (except collection) |
-| Sign up | Username, e-mail, password, confirm password | Requires name, username, e-mail, password |
-| Profile | Display name, username, e-mail, ENS name (`.eth`), wallet nickname, avatar, password change | Name, username, e-mail, bio, avatar |
-| Wallets | Display name, nickname, network, profile name, address, ENS or secondary address, wallet type, referral code, e-mail, ENS name | Slot, label, provider, address |
-| Checkout collector | The wallet form's fields plus "Usar outra carteira?" and an optional note | Full name, e-mail |
-| Social login | Google and Facebook buttons | Out of scope; must not appear to work |
+Still open, to be resolved with their screens:
+
+| Area | Design | Current contract | Phase |
+| --- | --- | --- | --- |
+| Profile | Display name, username, e-mail, ENS name (`.eth`), wallet nickname, avatar, password change | Name, username, e-mail, bio, avatar | 6 |
+| Wallets | Display name, nickname, network, profile name, address, ENS or secondary address, wallet type, referral code, e-mail, ENS name | Slot, label, provider, address | 6 |
+| Checkout collector | The wallet form's fields plus "Usar outra carteira?" and an optional note | Full name, e-mail | 5 |
+| Social login | Google and Facebook buttons | Out of scope; shows an "Em breve" notice | - |
