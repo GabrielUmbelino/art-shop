@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { sessionKey } from '@/api/auth'
 import { profileApi, profileQuery } from '@/api/profile'
+import { EnsInput } from '@/components/ens-input'
 import { PasswordInput } from '@/components/password-input'
 import { Button } from '@/components/ui/button'
 import { FieldError } from '@/components/ui/field'
@@ -145,25 +146,12 @@ function ProfileFormView({ user }: { user: User }) {
         {text('email', 'E-mail', 'email')}
         <LabeledField label="Nome ENS" required error={errors.ensName}>
           {(control) => (
-            <div className="flex gap-2">
-              <span
-                className="flex h-10 items-center rounded-[2.5px] border border-input px-3 text-sm"
-                aria-hidden="true"
-              >
-                .eth
-              </span>
-              <input
-                {...control}
-                value={ensValue.replace(/\.eth$/, '')}
-                onChange={(e) =>
-                  form.setValue('ensName', e.target.value ? `${e.target.value.trim()}.eth` : '', {
-                    shouldDirty: true,
-                  })
-                }
-                placeholder="nome"
-                className={inputClass}
-              />
-            </div>
+            <EnsInput
+              {...control}
+              value={ensValue}
+              onChange={(v) => form.setValue('ensName', v, { shouldDirty: true })}
+              className={inputClass}
+            />
           )}
         </LabeledField>
         {text('walletNickname', 'Apelido da carteira')}

@@ -130,8 +130,9 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] Contracts follow the layouts: profile gets ENS name and wallet nickname (bio removed); wallets carry network and the collector profile (display/profile name, e-mail, ENS, referral code, secondary address); shared field rules in `contracts/fields.ts`; checkout prefills from the selected wallet
 - [x] Account layout: sidebar (Dados do perfil, Carteiras, Lista de interesse, out-of-scope items as "Em breve", Sair) on desktop, scrolling tabs on mobile
 - [x] Profile: edit data (layout fields), avatar upload/preview/remove (type and size checked), change password (current, new, confirmation), API errors mapped to fields, header and session updated, persists after refresh
-- [~] Wallets: primary and secondary forms (layout fields), create and edit, "Igual à carteira principal", address/ENS validation, API conflicts on fields, persists after refresh
-- **Checkpoint:** E2E #8 green
+- [x] Wallets: primary and secondary forms (layout fields), create and edit, "Igual à carteira principal", address/ENS validation, API conflicts on fields, persists after refresh
+- [x] Shared `EnsInput` (".eth" suffix box) for profile, wallets and checkout
+- **Checkpoint:** `account.spec.ts` (E2E #8: profile, avatar, password, wallets) green; full suite 95/95 on desktop and mobile (twice)
 
 ### Phase 7 — Visual fidelity, responsiveness, a11y pass
 - [ ] Compare every screen against Figma at 390 / 768 / 1440 (Figma MCP screenshots side by side); fix spacing/type/colour drift

@@ -5,6 +5,7 @@ import { ChevronLeftIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { profileQuery } from '@/api/profile'
+import { EnsInput } from '@/components/ens-input'
 import { Button } from '@/components/ui/button'
 import { FieldError } from '@/components/ui/field'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -225,24 +226,13 @@ function CheckoutFormView({
                   control={form.control}
                   name="collector.ensName"
                   render={({ field }) => (
-                    <div className="flex gap-2">
-                      <input
-                        {...control}
-                        value={field.value.replace(/\.eth$/, '')}
-                        onChange={(e) =>
-                          field.onChange(e.target.value ? `${e.target.value.trim()}.eth` : '')
-                        }
-                        onBlur={field.onBlur}
-                        placeholder="nome"
-                        className={inputClass}
-                      />
-                      <span
-                        className="flex h-10 items-center rounded-[2.5px] border border-input px-3 text-sm"
-                        aria-hidden="true"
-                      >
-                        .eth
-                      </span>
-                    </div>
+                    <EnsInput
+                      {...control}
+                      value={field.value}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      className={inputClass}
+                    />
                   )}
                 />
               )}

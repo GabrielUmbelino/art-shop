@@ -86,4 +86,7 @@ Logged as they are introduced.
 | Checkout | Mobile shows saved wallets and "Carteira e rede" first (as designed), then the collector form, then the total and confirm button | The mobile design has no form; errors must be visible before confirming |
 | Orders | The receipt is a page styled like the designed dialog; pending and refused states use the same card | A receipt needs its own URL to survive refresh; those states are not designed |
 | NFT details | The price at the top follows the selected edition (the previous price is shown only for the cheapest edition) | The design shows the price of the selected edition |
+| Account | Profile, wallets and the wish list share the designed sidebar; on mobile it becomes a scrolling row of tabs | No mobile design for these pages |
+| Account | One "Salvar" saves profile data and, when the password fields are filled, changes the password | The design has a single button for both sections |
+| Wallets | The primary wallet form is always shown (create or edit); "Adicionar" opens the secondary form; "Igual à carteira principal" copies the primary's profile fields | Matches the design's sections |
 | Tooling | oxlint instead of ESLint; MSW pinned to 2.x | oxlint is the Vite template default; `@mswjs/socket.io-binding` 0.2 requires `msw@^2` |

@@ -140,7 +140,7 @@ Creating an order:
 | `PATCH /profile` | Auth | `profileUpdateBody` | 200 `user`; 409 on email or username conflict |
 | `PUT /profile/password` | Auth | `passwordChangeBody` | 204; 422 with `fieldErrors.currentPassword` if wrong |
 
-The avatar is sent as a `data:image/...;base64,` URL in `avatarUrl` (under 1 MB), or `null` to remove it. Passwords are stored as salted SHA-256 hashes.
+Profile fields: `name` (display name), `username`, `email`, `ensName`, `walletNickname` and `avatarUrl`. The avatar is sent as a `data:image/...;base64,` URL (under 1 MB), or `null` to remove it. Passwords are stored as salted SHA-256 hashes.
 
 ### Wallets (`wallet.ts`)
 
@@ -152,7 +152,7 @@ The avatar is sent as a `data:image/...;base64,` URL in `avatarUrl` (under 1 MB)
 | `POST /wallets/:id/connect` | Auth | `{ network }` | 200 `walletConnection`; 409 `WALLET_REJECTED` |
 | `DELETE /wallets/:id/connection` | Auth | | 204 |
 
-Each user has at most one `primary` and one `secondary` wallet. Changing a wallet's address drops its connection.
+A wallet has the wallets layout's fields: `label` (nickname), `provider`, `address`, `network`, `displayName`, `profileName`, `email`, `ensName`, `referralCode` and `secondaryAddress`. Each user has at most one `primary` and one `secondary` wallet. Changing a wallet's address drops its connection.
 
 ## Realtime events (`events.ts`)
 
