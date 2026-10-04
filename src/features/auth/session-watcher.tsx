@@ -21,6 +21,7 @@ export function SessionWatcher() {
     const unsubscribe = subscribeToken((reason) => {
       const token = getToken()
       queryClient.removeQueries({ queryKey: privateRoot })
+      queryClient.removeQueries({ queryKey: ['cart'] })
       connectRealtime(token)
       if (token) return
 

@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { apiError, type ApiErrorBody, type ErrorCode } from '@/contracts/common'
+import { getGuestCartId } from '@/lib/guest-cart'
 import { getToken, setToken } from '@/lib/session-store'
 
 export type ClientErrorCode = ErrorCode | 'NETWORK' | 'TIMEOUT'
@@ -34,6 +35,9 @@ export const http = axios.create({
 http.interceptors.request.use((config) => {
   const token = getToken()
   if (token) config.headers.Authorization = `Bearer ${token}`
+  // Ignored by the API for signed-in users, who always get their own cart.
+  const cartId = getGuestCartId()
+  if (cartId) config.headers['X-Cart-Id'] = cartId
   return config
 })
 
