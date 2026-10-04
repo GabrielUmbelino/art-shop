@@ -4,7 +4,7 @@ import { cart, networkInfo, quote, type AddCartItemBody } from '@/contracts/cart
 import type { Network } from '@/contracts/common'
 import { getToken } from '@/lib/session-store'
 import { getGuestCartId, setGuestCartId } from '@/lib/guest-cart'
-import { http } from './http'
+import { http, parse } from './http'
 import { privateKey } from './keys'
 
 /** Signed-in carts are private data; the guest cart lives under its own key. */
@@ -14,7 +14,7 @@ export const quoteKey = (userId: string | null, network: Network) =>
   [...cartKey(userId), 'quote', network] as const
 
 const parseCart = (data: unknown) => {
-  const parsed = cart.parse(data)
+  const parsed = parse(cart, data)
   // The first guest request creates the cart; remember it for the next visits.
   if (!getToken() && parsed.id !== getGuestCartId()) setGuestCartId(parsed.id)
   return parsed
@@ -30,13 +30,13 @@ export const quoteQuery = (userId: string | null, network: Network) =>
   queryOptions({
     queryKey: quoteKey(userId, network),
     queryFn: async ({ signal }) =>
-      quote.parse((await http.get('/cart/quote', { params: { network }, signal })).data),
+      parse(quote, (await http.get('/cart/quote', { params: { network }, signal })).data),
   })
 
 export const networksQuery = queryOptions({
   queryKey: ['networks'],
   queryFn: async ({ signal }) =>
-    z.array(networkInfo).parse((await http.get('/networks', { signal })).data),
+    parse(z.array(networkInfo), (await http.get('/networks', { signal })).data),
   staleTime: Infinity,
 })
 
@@ -48,5 +48,5 @@ export const cartApi = {
   applyCoupon: async (code: string) => parseCart((await http.put('/cart/coupon', { code })).data),
   removeCoupon: async () => parseCart((await http.delete('/cart/coupon')).data),
   merge: async (guestCartId: string) =>
-    cart.parse((await http.post('/cart/merge', { guestCartId })).data),
+    parse(cart, (await http.post('/cart/merge', { guestCartId })).data),
 }

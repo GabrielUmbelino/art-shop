@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query'
 import axios from 'axios'
 import { order, type CreateOrderBody } from '@/contracts/order'
-import { ApiError, http } from './http'
+import { ApiError, http, parse } from './http'
 import { privateKey } from './keys'
 
 export const orderKey = (userId: string, id: string) => privateKey(userId, 'orders', id)
@@ -9,7 +9,7 @@ export const orderKey = (userId: string, id: string) => privateKey(userId, 'orde
 export const orderQuery = (userId: string, id: string) =>
   queryOptions({
     queryKey: orderKey(userId, id),
-    queryFn: async ({ signal }) => order.parse((await http.get(`/orders/${id}`, { signal })).data),
+    queryFn: async ({ signal }) => parse(order, (await http.get(`/orders/${id}`, { signal })).data),
   })
 
 /** Long enough for a slow API, short enough to recover quickly from a lost response. */
@@ -29,7 +29,7 @@ export const ordersApi = {
         signal: controller.signal,
         timeout: 0,
       })
-      return order.parse(data)
+      return parse(order, data)
     } catch (error) {
       if (axios.isCancel(error))
         throw new ApiError('TIMEOUT', 'A confirmação do pedido está demorando.', null)

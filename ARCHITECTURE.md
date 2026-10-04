@@ -4,7 +4,7 @@ Full write-up comes in Phase 9. Contracts and the mock environment are documente
 
 ## Data layer
 
-- **HTTP.** Every REST call goes through the Axios instance in `src/api/http.ts`. Failures become an `ApiError` with a `code`: the API's error code, or `NETWORK` / `TIMEOUT` when no answer arrived. Field errors from the API are mapped onto form fields by `applyApiError`.
+- **HTTP.** Every REST call goes through the Axios instance in `src/api/http.ts`. Failures become an `ApiError` with a `code`: the API's error code, `NETWORK` / `TIMEOUT` when no answer arrived, or `INVALID_RESPONSE` when a response does not match its contract (for example an HTML page instead of JSON). Responses are validated with `parse(schema, data)`; mismatches show a readable message and log the details to the console. Field errors from the API are mapped onto form fields by `applyApiError`.
 - **Cache and retries** (`src/app/query-client.ts`):
   - Data is fresh for 30 s, then refetched in the background on mount, focus and reconnect.
   - Queries retry at most twice, and only on `TRANSIENT`, `NETWORK` or `TIMEOUT` errors. 4xx errors never retry.

@@ -25,8 +25,12 @@ test('favorite, persist and remove', async ({ page, isMobile }) => {
   await page.goto('/favorites')
   await expect(page.getByRole('link', { name: 'Emerald Ape #042', exact: true })).toBeVisible()
 
+  // Wait for the removal before reloading: a page load would cancel the request.
+  const removed = page.waitForResponse((r) => r.url().endsWith('/api/favorites/nft-001') && r.ok())
   await page.getByRole('button', { name: 'Remover Emerald Ape #042 da lista de interesse' }).click()
-  await page.reload()
+  await removed
+  await reload(page)
+  await expect(page.getByRole('heading', { name: 'Lista de interesse' })).toBeVisible()
   await expect(page.getByRole('link', { name: 'Emerald Ape #042', exact: true })).toBeHidden()
 })
 

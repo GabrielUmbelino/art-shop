@@ -1,7 +1,7 @@
 import { keepPreviousData, queryOptions } from '@tanstack/react-query'
 import { z } from 'zod'
 import { nft, nftFacets, nftList, nftSummary, type NftListQuery } from '@/contracts/nft'
-import { http } from './http'
+import { http, parse } from './http'
 
 export const nftKeys = {
   all: ['nfts'] as const,
@@ -16,24 +16,25 @@ export const nftListQuery = (params: NftListQuery) =>
   queryOptions({
     queryKey: nftKeys.list(params),
     queryFn: async ({ signal }) =>
-      nftList.parse((await http.get('/nfts', { params, signal })).data),
+      parse(nftList, (await http.get('/nfts', { params, signal })).data),
     placeholderData: keepPreviousData,
   })
 
 export const nftQuery = (id: string) =>
   queryOptions({
     queryKey: nftKeys.detail(id),
-    queryFn: async ({ signal }) => nft.parse((await http.get(`/nfts/${id}`, { signal })).data),
+    queryFn: async ({ signal }) => parse(nft, (await http.get(`/nfts/${id}`, { signal })).data),
   })
 
 export const facetsQuery = queryOptions({
   queryKey: nftKeys.facets,
-  queryFn: async ({ signal }) => nftFacets.parse((await http.get('/nfts/facets', { signal })).data),
+  queryFn: async ({ signal }) =>
+    parse(nftFacets, (await http.get('/nfts/facets', { signal })).data),
   staleTime: 5 * 60_000,
 })
 
 export const featuredQuery = queryOptions({
   queryKey: nftKeys.featured,
   queryFn: async ({ signal }) =>
-    z.array(nftSummary).parse((await http.get('/nfts/featured', { signal })).data),
+    parse(z.array(nftSummary), (await http.get('/nfts/featured', { signal })).data),
 })

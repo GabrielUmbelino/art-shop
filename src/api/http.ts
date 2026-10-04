@@ -1,9 +1,10 @@
 import axios, { AxiosError } from 'axios'
+import type { z } from 'zod'
 import { apiError, type ApiErrorBody, type ErrorCode } from '@/contracts/common'
 import { getGuestCartId } from '@/lib/guest-cart'
 import { getToken, setToken } from '@/lib/session-store'
 
-export type ClientErrorCode = ErrorCode | 'NETWORK' | 'TIMEOUT'
+export type ClientErrorCode = ErrorCode | 'NETWORK' | 'TIMEOUT' | 'INVALID_RESPONSE'
 
 /** Every failed request becomes an ApiError with a code the UI can switch on. */
 export class ApiError extends Error {
@@ -23,7 +24,23 @@ export class ApiError extends Error {
 
 /** Errors worth retrying: the server said so, or the request never got an answer. */
 export const isRetryable = (error: unknown) =>
-  error instanceof ApiError && ['TRANSIENT', 'NETWORK', 'TIMEOUT'].includes(error.code)
+  error instanceof ApiError &&
+  ['TRANSIENT', 'NETWORK', 'TIMEOUT', 'INVALID_RESPONSE'].includes(error.code)
+
+/**
+ * Validates a response against its contract. A mismatch (including an HTML page instead of JSON)
+ * becomes a retryable ApiError with a readable message; the details go to the console.
+ */
+export function parse<T extends z.ZodType>(schema: T, data: unknown): z.infer<T> {
+  const result = schema.safeParse(data)
+  if (result.success) return result.data
+  console.error('Unexpected API response', result.error.issues, data)
+  throw new ApiError(
+    'INVALID_RESPONSE',
+    'Recebemos uma resposta inesperada do servidor. Tente novamente.',
+    null,
+  )
+}
 
 export const http = axios.create({
   baseURL: '/api',
