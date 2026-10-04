@@ -162,7 +162,11 @@ function ItemRow({ item, line }: { item: CartItem; line: Quote['lines'][number] 
         <NftImage src={item.image} alt="" sizes="100px" className="h-full md:size-[70px]" />
       </td>
       <th scope="row" className={`${cell} pt-3 text-left font-normal md:pl-4`}>
-        <Link to="/nft/$id" params={{ id: item.nftId }} className="font-bold hover:text-highlight max-md:text-sm">
+        <Link
+          to="/nft/$id"
+          params={{ id: item.nftId }}
+          className="font-bold hover:text-highlight max-md:text-sm"
+        >
           {item.name}
         </Link>
         <span className="block text-sm text-subtle max-md:hidden">ID do token: {item.tokenId}</span>

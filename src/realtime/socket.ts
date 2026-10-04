@@ -8,12 +8,14 @@ import { socketPath } from '@/contracts/events'
 let socket: Socket | null = null
 
 export function connectRealtime(token: string | null) {
-  socket?.disconnect()
+  disconnectRealtime()
   socket = io({ path: socketPath, transports: ['websocket'], auth: { token } })
   return socket
 }
 
+/** Listeners are released with the socket, so nothing from an ended session keeps running. */
 export function disconnectRealtime() {
+  socket?.off()
   socket?.disconnect()
   socket = null
 }

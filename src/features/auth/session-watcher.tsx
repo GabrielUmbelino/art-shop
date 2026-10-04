@@ -5,7 +5,9 @@ import { toast } from 'sonner'
 import { sessionKey } from '@/api/auth'
 import { privateRoot } from '@/api/keys'
 import { getToken, subscribeToken } from '@/lib/session-store'
+import { cartNotices } from '@/features/cart/notices-store'
 import { connectRealtime, disconnectRealtime } from '@/realtime/socket'
+import { bindRealtime } from '@/realtime/sync'
 
 /**
  * Single place that reacts to session changes (login, logout, user switch, expiry):
@@ -17,12 +19,13 @@ export function SessionWatcher() {
   const router = useRouter()
 
   useEffect(() => {
-    connectRealtime(getToken())
+    bindRealtime(connectRealtime(getToken()), queryClient)
     const unsubscribe = subscribeToken((reason) => {
       const token = getToken()
       queryClient.removeQueries({ queryKey: privateRoot })
       queryClient.removeQueries({ queryKey: ['cart'] })
-      connectRealtime(token)
+      cartNotices.clear()
+      bindRealtime(connectRealtime(token), queryClient)
       if (token) return
 
       queryClient.setQueryData(sessionKey, null)

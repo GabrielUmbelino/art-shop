@@ -113,7 +113,7 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] Cart data layer: guest cart id (`X-Cart-Id`), cart and quote queries, mutations (add, quantity, remove, coupon), merge into the user cart on login
 - [x] Cart page (desktop table, mobile cards): quantities bounded by availability, removal, coupon apply/remove with invalid/expired errors, summary (subtotal, discount, network fee, total) **from the quote API**, empty state, "Colecionadores também viram"
 - [x] Wire "Comprar" (details page), card cart action and the header/tab bar cart badge
-- [~] Realtime: `nft.updated` updates catalog, detail and cart caches with dedupe and version guard; reconcile with REST on reconnect; cart shows an accessible notice when price/availability changed and re-fetches the quote
+- [x] Realtime: `nft.updated` updates catalog, detail and cart caches with dedupe and version guard; reconcile with REST on reconnect; cart shows an accessible notice when price/availability changed and re-fetches the quote
 - **Checkpoint:** E2E #5 green
 
 ### Phase 5 — Checkout, orders, realtime hardening
