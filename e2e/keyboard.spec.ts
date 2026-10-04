@@ -63,7 +63,7 @@ test('catalog filters and cards work with the keyboard', async ({ page, isMobile
   await expect(page).toHaveURL('/nft/nft-001')
 })
 
-test('login dialog traps focus and closes with Escape', async ({ page }) => {
+test('login dialog traps focus, ignores Escape and closes from its button', async ({ page }) => {
   await start(page)
   await page.goto('/login')
   const dialog = page.getByRole('dialog')
@@ -72,7 +72,16 @@ test('login dialog traps focus and closes with Escape', async ({ page }) => {
     await page.keyboard.press('Tab')
     expect(await dialog.evaluate((d) => d.contains(document.activeElement))).toBe(true)
   }
+
+  // Escape is used to dismiss the browser's autofill suggestions while typing: the form stays open.
+  await dialog.getByLabel('E-mail').fill('ana@example.com')
+  await dialog.getByLabel('Senha', { exact: true }).focus()
   await page.keyboard.press('Escape')
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByLabel('E-mail')).toHaveValue('ana@example.com')
+
+  await tabTo(page, 'Fechar')
+  await page.keyboard.press('Enter')
   await expect(dialog).toBeHidden()
   await expect(page).toHaveURL('/')
 })

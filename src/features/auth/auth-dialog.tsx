@@ -33,6 +33,9 @@ export function AuthDialog({ mode, search }: { mode: 'login' | 'signup'; search:
   return (
     <Dialog open onOpenChange={(open) => !open && dismiss()}>
       <DialogContent
+        // Esc is how people dismiss the browser's password/autofill suggestions: it must not close the
+        // form mid-typing. The close button (keyboard reachable) dismisses the dialog.
+        onEscapeKeyDown={(event) => event.preventDefault()}
         className={cn(
           'flex flex-col gap-6 border-0 bg-card p-0 sm:max-w-[500px]',
           'max-md:inset-0 max-md:top-0 max-md:left-0 max-md:h-dvh max-md:max-w-none max-md:translate-0 max-md:overflow-y-auto max-md:rounded-none max-md:bg-background',

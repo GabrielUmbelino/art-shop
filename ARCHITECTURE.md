@@ -100,6 +100,7 @@ Logged as they are introduced.
 | Mocks | The mock server runs inside each tab; the database is shared through `localStorage`, but changes are not pushed to other open tabs | MSW intercepts in the page |
 | Auth | Sign-up has no display-name field (the design asks for username, e-mail, password and confirmation); the display name starts as the username | Follows the design |
 | Auth | Login and sign-up are dialogs over the home page on desktop (also when opened from another page) and full pages on mobile | As designed; closing returns to the `redirect` target |
+| Auth | Escape does not close the login / sign-up dialog; the close button does (also by keyboard) | Escape dismisses the browser's password and autofill suggestions; closing the form there would lose what was typed |
 | Auth | The dialog overlay dims the page (40% black); the design shows no overlay | Signals that the page behind is inert while the dialog is open |
 | Header | Signed-in users get an account menu (profile, wallets, wish list, log out) instead of "Entrar" | Not designed; built from the design's tokens |
 | Header | "Mercado" points to the catalog on the home page and is active on NFT, cart, checkout and order pages | The design has no separate market page |
