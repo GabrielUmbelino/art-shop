@@ -12,11 +12,11 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Nft } from '@/contracts/nft'
 import { compare } from '@/lib/money'
+import { NftRow } from '@/features/catalog/nft-row'
 import { FavoriteButton } from '@/features/favorites/favorite-button'
 import { DetailTabs } from './detail-tabs'
 import { EditionPicker } from './edition-picker'
 import { Gallery } from './gallery'
-import { MoreFromCollection } from './more-from-collection'
 
 /** Default edition: the cheapest one still available (falls back to the first). */
 const defaultEdition = (nft: Nft) =>
@@ -261,7 +261,11 @@ export function NftDetailPage({ id, edition }: { id: string; edition?: string })
       {nft && (
         <>
           <DetailTabs nft={nft} />
-          <MoreFromCollection nftId={nft.id} collection={nft.collection} />
+          <NftRow
+            title="Mais desta coleção"
+            query={{ collection: nft.collection }}
+            excludeId={nft.id}
+          />
         </>
       )}
     </div>
