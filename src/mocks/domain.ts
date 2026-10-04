@@ -43,6 +43,7 @@ export function toCart(record: CartRecord): Cart {
       return {
         ...item,
         name: nft.name,
+        tokenId: nft.tokenId,
         editionName: edition.name,
         image: nft.image,
         unitPrice: edition.price,

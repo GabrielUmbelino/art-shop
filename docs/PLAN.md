@@ -109,9 +109,11 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** `catalog.spec.ts` (#1, #12), `nft-detail.spec.ts` (#2), `favorites.spec.ts` (#4), smoke spec now also checks for horizontal overflow; 60/60 green on desktop and mobile (twice)
 
 ### Phase 4 — Cart
-- [ ] Cart page / drawer: change quantity (bounded), remove, coupon apply/remove (invalid/expired errors), summary (subtotal, discount, network fee, total) **from the quote API**
-- [ ] Guest cart persisted across refresh; merged into user cart on login
-- [ ] Realtime: `nft.updated` updates catalog, detail and cart caches; cart shows an accessible notice when price/availability changed and re-fetches the quote
+- [x] Cart item carries the token id (shown in the cart design)
+- [~] Cart data layer: guest cart id (`X-Cart-Id`), cart and quote queries, mutations (add, quantity, remove, coupon), merge into the user cart on login
+- [ ] Cart page (desktop table, mobile cards): quantities bounded by availability, removal, coupon apply/remove with invalid/expired errors, summary (subtotal, discount, network fee, total) **from the quote API**, empty state, "Colecionadores também viram"
+- [ ] Wire "Comprar" (details page), card cart action and the header/tab bar cart badge
+- [ ] Realtime: `nft.updated` updates catalog, detail and cart caches with dedupe and version guard; reconcile with REST on reconnect; cart shows an accessible notice when price/availability changed and re-fetches the quote
 - **Checkpoint:** E2E #5 green
 
 ### Phase 5 — Checkout, orders, realtime hardening
