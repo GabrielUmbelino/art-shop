@@ -16,7 +16,7 @@ export const user = z.object({
 })
 export type User = z.infer<typeof user>
 
-const password = z
+export const password = z
   .string()
   .min(8, 'Use pelo menos 8 caracteres')
   .regex(/[A-Za-z]/, 'Inclua uma letra')

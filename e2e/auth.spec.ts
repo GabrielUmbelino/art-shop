@@ -41,7 +41,7 @@ test('sign up: validation, conflict and success', async ({ page }) => {
   await submit.click()
   await expect(dialog(page)).toBeHidden()
   await page.goto('/profile')
-  await expect(page.getByTestId('profile-name')).toHaveText('carla')
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('carla')
 })
 
 test('login: errors, return to the requested page, session survives refresh', async ({ page }) => {
@@ -54,10 +54,10 @@ test('login: errors, return to the requested page, session survives refresh', as
 
   await fillLogin(page, 'ana@example.com')
   await expect(page).toHaveURL('/profile')
-  await expect(page.getByTestId('profile-name')).toHaveText('Ana Souza')
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('Ana Souza')
 
   await page.reload()
-  await expect(page.getByTestId('profile-name')).toHaveText('Ana Souza')
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('Ana Souza')
 })
 
 test('session expiry during navigation returns to the page after signing in again', async ({
@@ -80,14 +80,14 @@ test('session expiry during navigation returns to the page after signing in agai
 
   await fillLogin(page, 'ana@example.com')
   await expect(page).toHaveURL('/profile')
-  await expect(page.getByTestId('profile-name')).toHaveText('Ana Souza')
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('Ana Souza')
 })
 
 test('logout and user switch never show the previous user data', async ({ page }) => {
   await start(page)
   await page.goto('/login?redirect=%2Fprofile')
   await fillLogin(page, 'ana@example.com')
-  await expect(page.getByTestId('profile-name')).toHaveText('Ana Souza')
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('Ana Souza')
 
   await logout(page)
   expect(await page.evaluate(() => localStorage.getItem('kurio:token'))).toBeNull()
@@ -99,7 +99,7 @@ test('logout and user switch never show the previous user data', async ({ page }
     if (response.url().endsWith('/api/profile')) names.push((await response.json()).name)
   })
   await fillLogin(page, 'bruno@example.com')
-  await expect(page.getByTestId('profile-name')).toHaveText('Bruno Costa')
+  await expect(page.getByLabel('Nome de exibição')).toHaveValue('Bruno Costa')
   expect(names).toEqual(['Bruno Costa'])
 })
 
