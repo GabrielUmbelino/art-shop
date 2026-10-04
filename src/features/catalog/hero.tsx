@@ -18,12 +18,12 @@ export function Hero() {
 
   return (
     <section aria-labelledby="hero-title" className="page-container pt-4 md:pt-10">
-      <div className="grid items-center gap-6 max-md:grid-cols-[1fr_120px] max-md:rounded-2xl max-md:bg-card max-md:p-4 md:grid-cols-[1fr_450px] md:gap-12">
+      <div className="grid items-center gap-6 max-md:grid-cols-[1fr_120px] max-md:rounded-2xl max-md:bg-card max-md:p-4 md:grid-cols-[1fr_300px] md:gap-8 lg:grid-cols-[1fr_450px] lg:gap-12">
         <div className="flex flex-col gap-3 md:gap-5 md:pl-10">
           <p className="text-xs tracking-[0.12em] md:text-sm">Bem-vindo à Kurio</p>
           <h1
             id="hero-title"
-            className="text-base leading-snug font-bold tracking-[0.06em] uppercase md:text-[40px] md:leading-[1.75]"
+            className="text-base leading-snug font-bold tracking-[0.06em] uppercase md:text-[28px] md:leading-snug lg:text-[40px] lg:leading-[1.75]"
           >
             <span className="md:hidden">Seja dono da cultura digital</span>
             <span className="max-md:hidden">
@@ -63,7 +63,7 @@ export function Hero() {
           src={slide.image}
           alt={slide.alt}
           priority
-          sizes="(min-width: 768px) 450px, 120px"
+          sizes="(min-width: 1024px) 450px, (min-width: 768px) 300px, 120px"
           className="rounded-3xl max-md:rounded-xl"
         />
       </div>

@@ -28,7 +28,7 @@ export function Header() {
             KURIO
           </Link>
 
-          <nav aria-label="Principal" className="flex h-full gap-12">
+          <nav aria-label="Principal" className="flex h-full gap-6 lg:gap-12">
             <Link
               to="/"
               className={navItem}

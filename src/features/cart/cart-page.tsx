@@ -271,7 +271,7 @@ export function CartPage() {
             </Button>
           </div>
         ) : (
-          <div className="grid gap-10 md:grid-cols-[1fr_332px] md:gap-[86px]">
+          <div className="grid gap-10 lg:grid-cols-[1fr_332px] lg:gap-[86px]">
             <table className="block w-full md:table">
               <caption className="sr-only">Itens no carrinho</caption>
               <thead className="max-md:sr-only">

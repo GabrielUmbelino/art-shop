@@ -53,12 +53,12 @@ export function Footer() {
         <div className="bg-card">
           <section
             aria-label="Destaques"
-            className="grid gap-8 px-6 py-8 md:grid-cols-4 md:gap-0 md:px-12"
+            className="grid grid-cols-1 gap-8 px-6 py-8 md:grid-cols-2 md:px-12 lg:grid-cols-4 lg:gap-0"
           >
             {features.map((f) => (
               <div
                 key={f.letter}
-                className="flex flex-col gap-3 md:border-r md:border-primary md:pr-6 md:not-first:pl-6"
+                className="flex flex-col gap-3 lg:border-r lg:border-primary lg:pr-6 lg:not-first:pl-6"
               >
                 <span
                   aria-hidden="true"
@@ -71,7 +71,7 @@ export function Footer() {
               </div>
             ))}
             <form
-              className="flex flex-col gap-3 md:pl-6"
+              className="flex flex-col gap-3 lg:pl-6"
               onSubmit={(e) => {
                 e.preventDefault()
                 toast.info('Em breve: a newsletter não faz parte desta demonstração.')
@@ -103,7 +103,7 @@ export function Footer() {
             </form>
           </section>
 
-          <div className="grid gap-4 bg-strip px-8 py-6 text-sm tracking-wide md:grid-cols-4 md:items-center">
+          <div className="grid gap-4 bg-strip px-8 py-6 text-sm tracking-wide md:grid-cols-2 md:items-center lg:grid-cols-4">
             <span className="font-bold tracking-[0.15em]">KURIO</span>
             <span>Feito para colecionadores, criadores e cultura</span>
             <a href="mailto:contato@email.com" className={linkClass}>
@@ -114,7 +114,7 @@ export function Footer() {
             </a>
           </div>
 
-          <div className="grid gap-8 px-8 py-8 sm:grid-cols-2 md:grid-cols-4">
+          <div className="grid gap-8 px-8 py-8 sm:grid-cols-2 lg:grid-cols-4">
             <Column title="Meu perfil">
               <li>
                 <Link to="/profile" className={linkClass}>

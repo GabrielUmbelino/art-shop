@@ -13,10 +13,10 @@ import { ComingSoon } from '@/components/coming-soon'
 import { useLogout } from '@/features/auth/use-auth'
 
 const item =
-  'relative flex shrink-0 items-center gap-3 px-4 py-3 text-[15px] tracking-wide whitespace-nowrap text-primary hover:text-highlight focus-visible:outline-2 focus-visible:outline-ring max-md:rounded-full max-md:border max-md:border-border max-md:py-2'
+  'relative flex shrink-0 items-center gap-3 px-4 py-3 text-[15px] tracking-wide whitespace-nowrap text-primary hover:text-highlight focus-visible:outline-2 focus-visible:outline-ring max-lg:rounded-full max-lg:border max-lg:border-border max-lg:py-2'
 const active = {
   className:
-    'text-highlight md:before:absolute md:before:inset-y-0 md:before:left-0 md:before:w-1.5 md:before:bg-primary max-md:border-primary',
+    'text-highlight lg:before:absolute lg:before:inset-y-0 lg:before:left-0 lg:before:w-1.5 lg:before:bg-primary max-lg:border-primary',
   'aria-current': 'page' as const,
 }
 
@@ -24,11 +24,11 @@ const active = {
 export function AccountLayout() {
   const logout = useLogout()
   return (
-    <div className="page-container grid gap-6 py-8 md:grid-cols-[310px_1fr] md:gap-7">
-      <aside className="min-w-0 md:self-start md:bg-card">
-        <h2 className="px-2.5 pt-6 pb-2 text-lg font-bold max-md:sr-only">Meu perfil</h2>
+    <div className="page-container grid gap-6 py-8 lg:grid-cols-[310px_1fr] lg:gap-7">
+      <aside className="min-w-0 lg:self-start lg:bg-card">
+        <h2 className="px-2.5 pt-6 pb-2 text-lg font-bold max-lg:sr-only">Meu perfil</h2>
         <nav aria-label="Minha conta">
-          <ul className="flex gap-2 overflow-x-auto pb-2 md:flex-col md:gap-0 md:pb-0">
+          <ul className="flex gap-2 overflow-x-auto pb-2 lg:flex-col lg:gap-0 lg:pb-0">
             <li>
               <Link to="/profile" className={item} activeProps={active}>
                 <UserIcon className="size-4" /> Dados do perfil
@@ -39,7 +39,7 @@ export function AccountLayout() {
                 <MapPinIcon className="size-4" /> Carteiras
               </Link>
             </li>
-            <li className="max-md:hidden">
+            <li className="max-lg:hidden">
               <ComingSoon className={item}>
                 <ShoppingCartIcon className="size-4" /> Atividade
               </ComingSoon>
@@ -54,13 +54,13 @@ export function AccountLayout() {
               { label: 'Arquivos baixados', Icon: DownloadIcon },
               { label: 'Suporte', Icon: AlertTriangleIcon },
             ].map(({ label, Icon }) => (
-              <li key={label} className="max-md:hidden">
+              <li key={label} className="max-lg:hidden">
                 <ComingSoon className={item}>
                   <Icon className="size-4" /> {label}
                 </ComingSoon>
               </li>
             ))}
-            <li className="md:border-t md:border-border">
+            <li className="lg:border-t lg:border-border">
               <button
                 type="button"
                 onClick={() => logout.mutate()}
