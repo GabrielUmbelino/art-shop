@@ -4,7 +4,7 @@ import { start } from './support'
 const publicRoutes = [
   ['/', /Seja dono d[ao] (futuro da arte|cultura) digital/],
   ['/nft/nft-001', 'Emerald Ape #042'],
-  ['/cart', 'Cart'],
+  ['/cart', /^Carrinho/],
 ] as const
 
 const privateRoutes = ['/checkout', '/orders/1', '/profile', '/wallets', '/favorites']

@@ -19,6 +19,23 @@ Full write-up comes in Phase 9. Contracts and the mock environment are documente
   - It removes private cache and replaces the socket, so a new socket carries the new token.
   - When a 401 ends the session on a private page, it shows a toast and redirects to login with `reason=expired`. After signing in, the user returns to the same page.
 
+## Cart
+
+- **Guest cart.** A guest's cart lives on the API under an id kept in `localStorage` (`kurio:cart`) and sent as `X-Cart-Id`. Signed-in users always get their own cart; the API ignores the header for them.
+- **Merge on login.** After login or sign-up, the guest cart is merged into the user's cart (quantities capped by availability) and the guest id is dropped.
+- **Cache keys.** The cart is cached as `['cart', 'guest']` or `['private', userId, 'cart']`, with the quote under the same prefix. Every mutation stores the returned cart and refetches the quote.
+- **Totals come from the quote.** The client never computes totals. Lines with stock issues come back with an `issue`, and checkout is disabled until they are fixed.
+
+## Realtime
+
+- **Socket lifecycle.** One Socket.IO connection per session token. Login, logout and user switch replace it, and the old socket's listeners are removed.
+- **Applying `nft.updated`** (`src/realtime/sync.ts`):
+  - Duplicate events (same `id`) and stale ones (`version` not newer than the last applied or cached) are dropped.
+  - Otherwise the event updates the NFT's details entry and every cached list and featured item in place, and marks lists and facets stale for their next use.
+- **Cart items.** When an event touches an NFT in a cached cart, the change (price, sold out, low stock) is described in a notice on the cart page, announced to screen readers and shown as a toast. The cart and quote are then refetched.
+- **Reconnect.** After a reconnect, active NFT, cart and private queries are refetched from REST, because events may have been missed.
+- **Load order.** `engine.io-client` captures `globalThis.WebSocket` when its module is evaluated, so `main.tsx` starts the mocks before importing the app.
+
 ## Deviations, substitutions and limitations
 
 Logged as they are introduced.
@@ -49,4 +66,7 @@ Logged as they are introduced.
 | NFT details | "Contrato" shows the contract address and "Direitos autorais" the royalty text | The design has the two texts swapped |
 | NFT details | On mobile the reviews tab reads "Avaliações (19)" and the tab bar is hidden (the purchase panel takes its place) | The long label overflowed at 390px; the mobile design has no tab bar on this page |
 | Data | The first 9 seed NFTs reproduce the design's grid; generated NFTs reuse the 4 artworks | Visual fidelity and stable visual baselines |
+| Cart | The header and tab bar badge counts cart lines, not units | The design shows a fixed number; lines keep the badge short with large quantities |
+| Cart | Realtime change notices above the cart and a "Remover cupom" link | Not designed; needed to explain changes and undo a coupon |
+| Cart | The card's cart action adds one unit of the cheapest available edition | The card has no edition picker |
 | Tooling | oxlint instead of ESLint; MSW pinned to 2.x | oxlint is the Vite template default; `@mswjs/socket.io-binding` 0.2 requires `msw@^2` |

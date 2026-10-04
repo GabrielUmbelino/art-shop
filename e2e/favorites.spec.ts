@@ -14,7 +14,7 @@ test('favorite, persist and remove', async ({ page, isMobile }) => {
   await page.goto('/nft/nft-001')
   // Desktop: the "Favoritar" text button; mobile: the top-bar heart, whose label names the NFT.
   const heart = isMobile
-    ? page.getByRole('button', { name: /Emerald Ape #042/ }).first()
+    ? page.getByRole('button', { name: /^(Favoritar|Remover) Emerald Ape #042/ }).first()
     : page.getByRole('button', { name: /^Favorit(ar|ado)$/ })
   await expect(heart).toHaveAttribute('aria-pressed', 'false')
   await heart.click()
@@ -42,7 +42,7 @@ test('a failed favorite rolls back and explains why', async ({ page }) => {
   await page.goto('/')
   const heart = cards(page)
     .first()
-    .getByRole('button', { name: /Emerald Ape #042/ })
+    .getByRole('button', { name: /^(Favoritar|Remover) Emerald Ape #042/ })
   await heart.click()
   // Optimistic: pressed right away, then restored when the API fails.
   await expect(heart).toHaveAttribute('aria-pressed', 'true')
