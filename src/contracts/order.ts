@@ -50,6 +50,7 @@ export const orderLine = z.object({
   nftId: z.string(),
   editionId: z.string(),
   name: z.string(),
+  tokenId: z.string(),
   editionName: z.string(),
   image: z.string(),
   unitPrice: ethAmount,

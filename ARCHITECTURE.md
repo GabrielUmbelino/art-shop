@@ -36,6 +36,17 @@ Full write-up comes in Phase 9. Contracts and the mock environment are documente
 - **Reconnect.** After a reconnect, active NFT, cart and private queries are refetched from REST, because events may have been missed.
 - **Load order.** `engine.io-client` captures `globalThis.WebSocket` when its module is evaluated, so `main.tsx` starts the mocks before importing the app.
 
+## Checkout and orders
+
+- **Draft.** The checkout form is saved per user in `localStorage` (`kurio:checkout:<userId>`), so a refresh or an expired session (login, then return to `/checkout`) keeps what was typed. It is cleared when an order is confirmed.
+- **Wallet connection.** Choosing a saved wallet, a network and a provider, then "Conectar carteira", calls the simulated connection. It can be rejected (scenario) or disconnected. Changing wallet, network or provider requires connecting again, and the API refuses orders from a wallet that isn't connected on the selected network.
+- **Review.** "Confirmar compra" validates the form and opens a review with a fresh quote. Confirming fetches the quote again, and any difference (or the API's `QUOTE_CHANGED`) replaces the reviewed values and asks for a new confirmation. A realtime change while reviewing is flagged immediately.
+- **Idempotency.** Each attempt uses an `Idempotency-Key` stored with the request body; the same body reuses the key. The order request has its own 6 s timeout. On a timeout or network error it is retried (up to twice) with the same key, so the API returns the order created by the first attempt. The confirm button is locked while a request is in flight.
+- **Order page** (`/orders/:id`):
+  - **Pending:** shows a waiting state and survives refresh. Updates arrive through `order.updated`, with REST reconciliation on reconnect and a 15 s polling fallback.
+  - **Refused:** keeps the cart.
+  - **Confirmed:** shows the receipt, rendered only from the order snapshot. The API removes the bought units from the cart, and the client refetches it.
+
 ## Deviations, substitutions and limitations
 
 Logged as they are introduced.
@@ -69,4 +80,10 @@ Logged as they are introduced.
 | Cart | The header and tab bar badge counts cart lines, not units | The design shows a fixed number; lines keep the badge short with large quantities |
 | Cart | Realtime change notices above the cart and a "Remover cupom" link | Not designed; needed to explain changes and undo a coupon |
 | Cart | The card's cart action adds one unit of the cheapest available edition | The card has no edition picker |
+| Checkout | Required fields follow the design's asterisks, including referral code and ENS name; name, username, e-mail and wallet are prefilled from the profile and primary wallet | "Validar os campos do layout" (spec §3) |
+| Checkout | The layout's "Tipo de carteira" select and the "Carteira e rede" radios edit the same value (wallet provider); "Usar outra carteira?" reveals the saved-wallet list | The design shows both controls |
+| Checkout | "Conectar carteira" button, connection status and review dialog | Not designed; needed for the connection simulation and the review step (spec §3) |
+| Checkout | Mobile shows saved wallets and "Carteira e rede" first (as designed), then the collector form, then the total and confirm button | The mobile design has no form; errors must be visible before confirming |
+| Orders | The receipt is a page styled like the designed dialog; pending and refused states use the same card | A receipt needs its own URL to survive refresh; those states are not designed |
+| NFT details | The price at the top follows the selected edition (the previous price is shown only for the cheapest edition) | The design shows the price of the selected edition |
 | Tooling | oxlint instead of ESLint; MSW pinned to 2.x | oxlint is the Vite template default; `@mswjs/socket.io-binding` 0.2 requires `msw@^2` |

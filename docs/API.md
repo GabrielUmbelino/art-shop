@@ -119,7 +119,7 @@ The quote is the source of truth for totals:
 
 | Method and path | Auth | Headers | Body | Response |
 | --- | --- | --- | --- | --- |
-| `POST /orders` | Auth | `Idempotency-Key` (required) | `createOrderBody` | 201 `order` (new), 200 `order` (same key and body) |
+| `POST /orders` | Auth | `Idempotency-Key` (required) | `createOrderBody`: `quoteId`, `network`, `walletId`, `provider` and the `collector` profile | 201 `order` (new), 200 `order` (same key and body) |
 | `GET /orders/:id` | Auth | | | 200 `order`, 403, 404 |
 
 Creating an order:

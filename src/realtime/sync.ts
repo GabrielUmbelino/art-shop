@@ -3,7 +3,8 @@ import type { Socket } from 'socket.io-client'
 import { toast } from 'sonner'
 import { nftKeys } from '@/api/nfts'
 import type { Cart } from '@/contracts/cart'
-import { nftUpdatedEvent } from '@/contracts/events'
+import { nftUpdatedEvent, orderUpdatedEvent } from '@/contracts/events'
+import type { Order } from '@/contracts/order'
 import { nftSummary, type Nft, type NftList, type NftSummary } from '@/contracts/nft'
 import { cartNotices } from '@/features/cart/notices-store'
 import { announce } from '@/lib/announce'
@@ -73,19 +74,47 @@ export function bindRealtime(socket: Socket, queryClient: QueryClient) {
     }
   }
 
+  /** True the first time an event id is seen. */
+  const isNew = (id: string) => {
+    if (seen.includes(id)) return false
+    seen.push(id)
+    if (seen.length > 500) seen.shift()
+    return true
+  }
+
   socket.on('nft.updated', (raw: unknown) => {
     const parsed = nftUpdatedEvent.safeParse(raw)
-    if (!parsed.success) return
+    if (!parsed.success || !isNew(parsed.data.id)) return
     const event = parsed.data
-    if (seen.includes(event.id)) return
-    seen.push(event.id)
-    if (seen.length > 500) seen.shift()
 
     const cachedVersion =
       queryClient.getQueryData<Nft>(nftKeys.detail(event.resourceId))?.version ?? 0
     if (event.version <= Math.max(versions.get(event.resourceId) ?? 0, cachedVersion)) return
     versions.set(event.resourceId, event.version)
     applyNft(event.payload)
+  })
+
+  /**
+   * Order updates only reach the owner's socket, and the socket is replaced on any session change.
+   * They are applied to this session's cached order; terminal states (confirmed, refused) never regress.
+   */
+  socket.on('order.updated', (raw: unknown) => {
+    const parsed = orderUpdatedEvent.safeParse(raw)
+    if (!parsed.success || !isNew(parsed.data.id)) return
+    const { payload: order, version, resourceId } = parsed.data
+    const cached = queryClient.getQueriesData<Order>({
+      predicate: (q) =>
+        q.queryKey[0] === 'private' && q.queryKey[2] === 'orders' && q.queryKey[3] === resourceId,
+    })
+    for (const [key, current] of cached) {
+      if (current && current.version >= version) continue
+      queryClient.setQueryData(key, order)
+    }
+    if (order.status === 'confirmed') {
+      announce('Pagamento confirmado. Seus NFTs estão na sua carteira.')
+      void queryClient.invalidateQueries({ queryKey: nftKeys.all })
+      void queryClient.invalidateQueries({ predicate: (q) => isCartKey(q.queryKey) })
+    } else if (order.status === 'refused') announce('Pagamento recusado.')
   })
 
   // Events may have been missed while disconnected: reconcile active data with the API.

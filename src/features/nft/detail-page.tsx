@@ -74,9 +74,13 @@ function ShareLinks({ nft }: { nft: Nft }) {
   )
 }
 
+/** The edition in the URL, or the default one. Prices on the page follow the selected edition. */
+const selectedEdition = (nft: Nft, editionId: string | undefined) =>
+  nft.editions.find((e) => e.id === editionId) ?? defaultEdition(nft)
+
 function Purchase({ nft, editionId }: { nft: Nft; editionId: string | undefined }) {
   const navigate = useNavigate()
-  const edition = nft.editions.find((e) => e.id === editionId) ?? defaultEdition(nft)
+  const edition = selectedEdition(nft, editionId)
   const [quantity, setQuantity] = useState(1)
   const max = Math.min(edition.available, nft.maxPerOrder)
   const soldOut = edition.available === 0
@@ -236,7 +240,13 @@ export function NftDetailPage({ id, edition }: { id: string; edition?: string })
                 </span>
               </div>
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3 max-md:hidden">
-                <Price amount={nft.price} compareAt={nft.compareAtPrice} className="text-xl" />
+                <Price
+                  amount={selectedEdition(nft, edition).price}
+                  compareAt={
+                    selectedEdition(nft, edition).price === nft.price ? nft.compareAtPrice : null
+                  }
+                  className="text-xl"
+                />
                 <p className="flex items-center gap-2 text-sm">
                   <Stars rating={nft.rating.average} /> {nft.rating.count} avaliações de
                   colecionadores

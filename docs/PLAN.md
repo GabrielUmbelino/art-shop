@@ -121,10 +121,10 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] Order contract follows the payment layout: collector (display name, username, profile name, e-mail, ENS name, referral code, optional secondary address and note) and wallet provider
 - [x] Orders data layer: wallets query, connect/disconnect, order query, create with idempotency key persisted per attempt and own timeout; checkout draft persisted per user (survives refresh and session expiry)
 - [x] Checkout page (desktop and mobile layouts): collector form with layout validation, saved wallet selection ("Usar outra carteira?"), provider and network, connect / reject / disconnect simulation, summary from the quote
-- [~] Review and submit: review dialog with a fresh quote; any change (realtime or `QUOTE_CHANGED` on submit) shows the new values and requires confirming again; button locked while in flight; timeout retries with the same key and recovers the same order
-- [ ] Order page: pending (survives refresh and reconnect), refused (cart kept), confirmed receipt from the order snapshot only (tx id, date, total, wallet, lines, fee, explorer link)
-- [ ] Realtime `order.updated`: dedupe, version guard, applies only to the session's cache; confirmed orders refresh the cart (bought units removed by the API)
-- **Checkpoint:** E2E #6, #7, #9, #10 green
+- [x] Review and submit: review dialog with a fresh quote; any change (realtime or `QUOTE_CHANGED` on submit) shows the new values and requires confirming again; button locked while in flight; timeout retries with the same key and recovers the same order
+- [x] Order page: pending (survives refresh and reconnect), refused (cart kept), confirmed receipt from the order snapshot only (tx id, date, total, wallet, lines, fee, explorer link)
+- [x] Realtime `order.updated`: dedupe, version guard, applies only to the session's cache; confirmed orders refresh the cart (bought units removed by the API)
+- **Checkpoint:** `checkout.spec.ts` (E2E #6, #7, #9, #10 plus wallet reject/disconnect) green; full suite 87/87 on desktop and mobile (twice)
 
 ### Phase 6 — Profile & wallets
 - [ ] Profile: edit data, avatar upload/preview, change password (current password check, strength rules), API errors mapped to fields, persists after refresh
