@@ -114,9 +114,11 @@ function Summary({
         </div>
         <div className={row}>
           <dt>Taxa de rede</dt>
-          <dd className="text-lg">{value(quote?.networkFee)}</dd>
+          <dd className="flex flex-col items-end text-lg">
+            {value(quote?.networkFee)}
+            <span className="text-xs text-highlight">Taxa estimada</span>
+          </dd>
         </div>
-        <p className="-mt-2 text-right text-xs text-highlight">Taxa estimada</p>
         <div className={`${row} border-t border-border pt-4 font-bold`}>
           <dt>Total</dt>
           <dd className="text-lg text-highlight">{value(quote?.total)}</dd>

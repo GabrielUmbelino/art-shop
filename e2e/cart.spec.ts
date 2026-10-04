@@ -26,7 +26,7 @@ test('quantities, limits, removal and empty cart', async ({ page }) => {
   await buy(page, 'nft-001', 2)
   await expect(row(page, 'Emerald Ape #042')).toBeVisible()
   await expect(summaryValue(page, 'Subtotal')).toHaveText('2.38 ETH')
-  await expect(summaryValue(page, 'Taxa de rede')).toHaveText('0.016 ETH')
+  await expect(summaryValue(page, 'Taxa de rede')).toHaveText(/^0\.016 ETH/)
   await expect(summaryValue(page, 'Total')).toHaveText('2.396 ETH')
 
   const stepper = page.getByRole('group', { name: 'Quantidade de Emerald Ape #042' }).first()

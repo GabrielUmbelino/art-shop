@@ -26,19 +26,22 @@ export function FavoritesPage() {
           </Button>
         </div>
       ) : (
-        <ul className="grid grid-cols-2 gap-x-3 gap-y-8 md:gap-x-6 lg:grid-cols-4">
-          {favorites.data
-            ? favorites.data.items.map((nft) => (
-                <li key={nft.id}>
-                  <NftCard nft={nft} />
-                </li>
-              ))
-            : Array.from({ length: 4 }, (_, i) => (
-                <li key={i}>
-                  <NftCardSkeleton />
-                </li>
-              ))}
-        </ul>
+        <>
+          <h2 className="sr-only">NFTs salvos</h2>
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-8 md:gap-x-6 lg:grid-cols-4">
+            {favorites.data
+              ? favorites.data.items.map((nft) => (
+                  <li key={nft.id}>
+                    <NftCard nft={nft} />
+                  </li>
+                ))
+              : Array.from({ length: 4 }, (_, i) => (
+                  <li key={i}>
+                    <NftCardSkeleton />
+                  </li>
+                ))}
+          </ul>
+        </>
       )}
     </section>
   )

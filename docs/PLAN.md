@@ -136,8 +136,8 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 
 ### Phase 7 — Visual fidelity, responsiveness, a11y pass
 - [x] Global focus-visible outline, reduced-motion scrolling, devtools hidden under automation
-- [~] Automated accessibility audit (axe-core from the Lighthouse install, run as a script) on every screen, issues fixed
-- [ ] Responsive pass at 320 (400% zoom of 1280), 390, 768 and 1440 px on every route, public and private; overflow guarded by a spec
+- [x] Automated accessibility audit (`pnpm a11y`: axe-core from the Lighthouse install) on every screen, desktop and mobile: 4 rule violations found and fixed (definition lists, heading order, link distinguishable only by color, duplicate landmark), now 0
+- [~] Responsive pass at 320 (400% zoom of 1280), 390, 768 and 1440 px on every route, public and private; overflow guarded by a spec
 - [ ] Keyboard and focus E2E (#11): skip link, header and catalog by keyboard, dialog and sheet focus trap/return, form errors linked and focused
 - [ ] Visual regression baselines for home, detail, cart and checkout (desktop + mobile), stable data, committed
 - [x] Out-of-scope links/actions show "Em breve" (done since Phase 2)

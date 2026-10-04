@@ -107,7 +107,7 @@ export function ReviewDialog({ body, items, walletAddress, onClose, onWalletDisc
           </p>
         )}
 
-        <OrderSummary items={items} quote={reviewed ?? undefined} />
+        <OrderSummary items={items} quote={reviewed ?? undefined} title="Itens do pedido" />
 
         {retrying && (
           <p role="status" className="text-sm text-highlight">
