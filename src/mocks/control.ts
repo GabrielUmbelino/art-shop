@@ -2,6 +2,7 @@ import type { Edition } from '@/contracts/nft'
 import { db, reset, save } from './db/store'
 import { changeEdition, clearOrderTimers, resolveOrder, resumePendingOrders } from './domain'
 import { isScenario, scenarios, type MockConfig, type ScenarioName } from './scenarios'
+import { resetNetworkSequences } from './network'
 import { dropConnections, events, replay } from './socket'
 
 /** Test and demo controls, exposed as window.__mock when mocks are enabled. */
@@ -12,10 +13,12 @@ export const mockControl = {
   /** Restores the seed data with the given (or current) scenario. */
   reset: (scenario?: ScenarioName) => {
     clearOrderTimers()
+    resetNetworkSequences()
     reset(scenario)
   },
   /** Overrides parts of the current scenario's configuration. */
   configure: (patch: Partial<MockConfig>) => {
+    resetNetworkSequences()
     Object.assign(db.config, patch)
     save()
     if (patch.socketOffline) dropConnections()

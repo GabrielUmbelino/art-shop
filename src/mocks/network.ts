@@ -14,6 +14,9 @@ function random() {
 
 const calls = new Map<string, number>()
 
+/** Restarts latency sequences, so a scenario behaves the same after every reset or reconfiguration. */
+export const resetNetworkSequences = () => calls.clear()
+
 function latencyFor(latency: Latency, route: string) {
   if (typeof latency === 'number') return latency
   if ('sequence' in latency) {

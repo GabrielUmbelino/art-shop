@@ -10,7 +10,13 @@ async function enableMocks() {
   mountMockPanel()
 }
 
+// The app and the mock layer download in parallel; the app renders once the mocks intercept requests.
+// Loading the app early is safe because socket.io-client, the one module that must see the patched
+// WebSocket, is imported lazily (src/realtime/socket.ts).
+const app = import('@/app/render')
 await enableMocks()
-// The app is imported only after the mocks patch fetch and WebSocket: socket.io-client (engine.io)
-// reads globalThis.WebSocket once, when its module is evaluated.
-await import('@/app/render')
+// User Timing marks: Lighthouse reports them, showing the cost of the mock layer before the first render.
+performance.mark('kurio:mocks-ready')
+const { renderApp } = await app
+renderApp()
+performance.mark('kurio:render')

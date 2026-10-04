@@ -1,5 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { FacebookLogo, GoogleLogo } from '@/components/brand-icons'
+import { FacebookLogo, GoogleLogo } from '@/components/provider-logos'
 import { ComingSoon } from '@/components/coming-soon'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { cn } from 'cn'

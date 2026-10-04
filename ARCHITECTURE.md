@@ -34,7 +34,7 @@ Full write-up comes in Phase 9. Contracts and the mock environment are documente
   - Otherwise the event updates the NFT's details entry and every cached list and featured item in place, and marks lists and facets stale for their next use.
 - **Cart items.** When an event touches an NFT in a cached cart, the change (price, sold out, low stock) is described in a notice on the cart page, announced to screen readers and shown as a toast. The cart and quote are then refetched.
 - **Reconnect.** After a reconnect, active NFT, cart and private queries are refetched from REST, because events may have been missed.
-- **Load order.** `engine.io-client` captures `globalThis.WebSocket` when its module is evaluated, so `main.tsx` starts the mocks before importing the app.
+- **Load order.** `engine.io-client` captures `globalThis.WebSocket` when its module is evaluated, so `socket.io-client` is imported lazily on the first connection, which always happens after the mocks have started. The rest of the app downloads in parallel with the mock layer and renders once the mocks are active.
 
 ## Checkout and orders
 
@@ -59,6 +59,22 @@ Full write-up comes in Phase 9. Contracts and the mock environment are documente
 - **Overflow.** `responsive.spec.ts` checks every route at 320 (a 1280px screen at 400% zoom), 390, 768 and 1440px for horizontal overflow.
 - **Breakpoints.** The cart and account pages use two columns from 1024px and stack below. Tablets get a smaller hero headline and image and a two-column footer.
 - **Motion.** Skeleton shimmer, spinners and scrolling respect `prefers-reduced-motion`. The hero carousel never moves on its own.
+
+## Performance
+
+The Lighthouse results and their analysis are in [lighthouse/REPORT.md](lighthouse/REPORT.md) (`pnpm lighthouse`).
+
+- **Loading.**
+  - The app bundle and the mock layer download in parallel. The app renders once MSW intercepts requests.
+  - Only `socket.io-client` is imported lazily, because it must see the patched `WebSocket`.
+  - The libraries every page needs share one `vendor` chunk; routes, page-specific libraries and the mock layer stay split.
+- **Data.** Route loaders prefetch the catalog and NFT queries while the page's code loads. With `defaultPreload: 'intent'`, hovering a link prefetches the next page's data.
+- **Images and fonts.**
+  - Artwork is AVIF (480 and 960 px) with a JPEG fallback, and every image has fixed dimensions.
+  - Below-the-fold images are lazy; the first visible images get `fetchpriority="high"`.
+  - The Latin subset of Roboto Mono is self-hosted and preloaded.
+- **Layout stability.** Skeletons reserve the final size of the content, including the NFT page's tabs and related NFTs. CLS is 0 on the audited pages.
+- **Instrumentation.** The `kurio:mocks-ready` and `kurio:render` User Timing marks show the mock layer's cost before the first render.
 
 ## Visual regression
 
@@ -113,4 +129,5 @@ Logged as they are introduced.
 | Accessibility | Required fields show the design's asterisk (hidden from screen readers) and carry `aria-required` | The asterisk alone is visual only |
 | Accessibility | "Aplique aqui" and other inline links are underlined | Color alone did not distinguish them from text (axe `link-in-text-block`) |
 | Accessibility | The estimated-fee caption sits inside the fee value; the wish list has a visually hidden section heading | Valid definition lists and heading order (axe) |
+| Performance | Mobile Lighthouse performance is 81 (target 90) on the audited pages; desktop is 99 | The required in-browser mock layer (169 KiB JS, service worker activation, simulated API latency) sits before the API-dependent LCP images; see `lighthouse/REPORT.md` |
 | Tooling | oxlint instead of ESLint; MSW pinned to 2.x | oxlint is the Vite template default; `@mswjs/socket.io-binding` 0.2 requires `msw@^2` |

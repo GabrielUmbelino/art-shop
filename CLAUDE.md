@@ -26,7 +26,7 @@ pnpm lint              # oxlint
 pnpm format            # prettier (code only, markdown is ignored)
 pnpm test:e2e          # Playwright (Chromium, desktop + mobile)
 pnpm test:e2e:update   # refresh visual baselines (only when a visual change is intended)
-pnpm lighthouse        # LHCI: home + detail, mobile + desktop, 3 runs
+pnpm lighthouse        # build + LHCI (home, detail; mobile, desktop; 3 runs) + lighthouse/REPORT.md
 pnpm a11y              # axe-core audit of every screen (needs pnpm dev running)
 ```
 

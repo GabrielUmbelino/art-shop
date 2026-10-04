@@ -329,6 +329,9 @@ test('orders: timeout after creation recovers the same order with the same key',
 
 test('network: offline and out-of-order responses', async ({ page }) => {
   await start(page, 'out-of-order')
+  // Let the page's own catalog requests finish, then restart the slow/fast sequence for this check.
+  await page.waitForLoadState('networkidle')
+  await page.evaluate(() => window.__mock.configure({}))
   const order = await page.evaluate(async () => {
     const done: string[] = []
     await Promise.all(

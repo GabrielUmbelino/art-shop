@@ -185,7 +185,7 @@ Every event has the same envelope:
   - **Handshake:** the binding answers it itself, so a connection can't be refused for a bad token. Instead, the token is read from the CONNECT packet and only scopes private events.
   - **Pings:** the binding doesn't send them, so the mock sends one every 25 s to keep socket.io-client from timing out.
   - **No rooms, namespaces or broadcast:** the mock keeps its own list of connections.
-  - **Load order:** `engine.io-client` reads `globalThis.WebSocket` once, when its module is evaluated. `main.tsx` therefore starts the mocks before importing the app, so the patched WebSocket is the one captured.
+  - **Load order:** `engine.io-client` reads `globalThis.WebSocket` once, when its module is evaluated. `socket.io-client` is therefore imported lazily, on the first connection, which always happens after the mocks have started. The rest of the app downloads in parallel with the mock layer.
 - Interception runs in the page. Each browser tab has its own mock server. All tabs share one persisted database, but changes made in one tab are not pushed to the others.
 
 ### State, scenarios and reset

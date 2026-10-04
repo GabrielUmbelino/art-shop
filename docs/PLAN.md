@@ -149,9 +149,10 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] `lighthouserc.cjs` + `pnpm lighthouse`: home and NFT detail, mobile and desktop, 3 runs each, against `pnpm preview` of the demo build (mocks on, default scenario); reports in `lighthouse/reports/<profile>`, medians and environment in `lighthouse/REPORT.md` (`scripts/lighthouse-report.mjs`)
 - [x] Baseline (before changes): mobile 81 / 63 performance, desktop 98 / 85; accessibility 96-100; best practices 100; SEO 92
 - [x] SEO: `robots.txt`. Accessibility: 24px carousel dot targets. CLS: gallery width on mobile (`self-start` only on desktop) and skeleton space for tabs/related NFTs (detail CLS 0.36 / 0.24 → 0)
-- [ ] Loading waterfall: download the app in parallel with the mock layer (socket.io-client loaded lazily instead of the whole app), preload the font
-- [ ] Final measurement, medians + LCP/CLS/TBT in `lighthouse/REPORT.md`, analysis of any result below target
-- **Checkpoint:** all targets met or justified
+- [x] Loading: app downloaded in parallel with the mock layer (only socket.io-client is lazy), vendor chunk for shared libraries (56 → 45 JS requests), brand marks split, route loaders prefetch page data, self-hosted preloaded font subset, `kurio:mocks-ready` / `kurio:render` user timings
+- [x] Final measurement in `lighthouse/REPORT.md`: desktop 99/99 performance; accessibility, best practices and SEO 100 everywhere; mobile performance 81/81 (LCP ~4.4 s), below target and analysed (mock layer download + service worker activation + mock latency on API-dependent LCP images)
+- [x] Mock latency sequences restart on reset/configure (deterministic out-of-order scenario with route prefetching)
+- **Checkpoint:** all targets met except mobile performance, justified in `lighthouse/REPORT.md`; full suite 120/120 (twice)
 
 ### Phase 9 — Docs & deploy
 - [ ] `README.md`: setup, env vars, fictitious credentials, scenario selection & reset, commands, how to reproduce each failure flow

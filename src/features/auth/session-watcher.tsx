@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
 import { useEffect } from 'react'
+import type { Socket } from 'socket.io-client'
 import { toast } from 'sonner'
 import { sessionKey } from '@/api/auth'
 import { privateRoot } from '@/api/keys'
@@ -19,13 +20,14 @@ export function SessionWatcher() {
   const router = useRouter()
 
   useEffect(() => {
-    bindRealtime(connectRealtime(getToken()), queryClient)
+    const bind = (socket: Socket) => bindRealtime(socket, queryClient)
+    void connectRealtime(getToken(), bind)
     const unsubscribe = subscribeToken((reason) => {
       const token = getToken()
       queryClient.removeQueries({ queryKey: privateRoot })
       queryClient.removeQueries({ queryKey: ['cart'] })
       cartNotices.clear()
-      bindRealtime(connectRealtime(token), queryClient)
+      void connectRealtime(token, bind)
       if (token) return
 
       queryClient.setQueryData(sessionKey, null)
