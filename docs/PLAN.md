@@ -135,11 +135,14 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** `account.spec.ts` (E2E #8: profile, avatar, password, wallets) green; full suite 95/95 on desktop and mobile (twice)
 
 ### Phase 7 — Visual fidelity, responsiveness, a11y pass
-- [ ] Compare every screen against Figma at 390 / 768 / 1440 (Figma MCP screenshots side by side); fix spacing/type/colour drift
-- [ ] Keyboard pass on every flow; visible focus; dialog/drawer focus management; labels + `aria-describedby` errors; live region for mutations and realtime notices; non-colour-only states; 200%/400% zoom with no horizontal overflow
-- [ ] Out-of-scope links/actions (editorial, support, activity, offers, downloads): disabled or "coming soon" — never fake success
-- [ ] Document asset substitutions and a11y deviations in `ARCHITECTURE.md`
-- **Checkpoint:** E2E #11 green + visual regression baselines for home, detail, cart, checkout (desktop + mobile) committed
+- [x] Global focus-visible outline, reduced-motion scrolling, devtools hidden under automation
+- [~] Automated accessibility audit (axe-core from the Lighthouse install, run as a script) on every screen, issues fixed
+- [ ] Responsive pass at 320 (400% zoom of 1280), 390, 768 and 1440 px on every route, public and private; overflow guarded by a spec
+- [ ] Keyboard and focus E2E (#11): skip link, header and catalog by keyboard, dialog and sheet focus trap/return, form errors linked and focused
+- [ ] Visual regression baselines for home, detail, cart and checkout (desktop + mobile), stable data, committed
+- [x] Out-of-scope links/actions show "Em breve" (done since Phase 2)
+- [ ] Asset substitutions and a11y deviations documented in `ARCHITECTURE.md`
+- **Checkpoint:** E2E #11 green + baselines committed
 
 ### Phase 8 — Performance & Lighthouse
 - [ ] Route-level code splitting, image sizing (`width/height`, `srcset`, modern formats, `loading="lazy"` below the fold, `fetchpriority="high"` for LCP image), font preloading, meta/SEO tags, `robots.txt`

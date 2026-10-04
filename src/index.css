@@ -84,6 +84,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Visible focus for every focusable element, including those without their own focus style. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
   html {
     @apply font-sans;
   }

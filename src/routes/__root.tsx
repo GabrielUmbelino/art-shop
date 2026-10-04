@@ -8,11 +8,13 @@ import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
 import { SessionWatcher } from '@/features/auth/session-watcher'
 
-const QueryDevtools = import.meta.env.DEV
-  ? lazy(() =>
-      import('@tanstack/react-query-devtools').then((m) => ({ default: m.ReactQueryDevtools })),
-    )
-  : () => null
+// Dev only, and not under automation (keeps screenshots and audits stable).
+const QueryDevtools =
+  import.meta.env.DEV && !navigator.webdriver
+    ? lazy(() =>
+        import('@tanstack/react-query-devtools').then((m) => ({ default: m.ReactQueryDevtools })),
+      )
+    : () => null
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   component: RootLayout,

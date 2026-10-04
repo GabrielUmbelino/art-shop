@@ -128,7 +128,10 @@ export function Catalog({ search }: { search: CatalogSearch }) {
 
   const changePage = (next: number) => {
     update({ page: next > 1 ? next : undefined })
-    document.getElementById('mercado')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
+    document
+      .getElementById('mercado')
+      ?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
   }
 
   return (
