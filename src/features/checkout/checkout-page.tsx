@@ -23,25 +23,27 @@ import { checkoutForm, providerLabels, type CheckoutForm } from './schema'
 import { useUserId, useWalletConnection, useWallets } from './use-checkout'
 import { ConnectionSection, SavedWallets } from './wallet-section'
 
+/** The collector profile saved with a wallet (wallets page) fills the payment form. */
+const walletProfile = (wallet: Wallet, profile: User): CheckoutForm['collector'] => ({
+  displayName: wallet.displayName,
+  username: profile.username,
+  profileName: wallet.profileName,
+  email: wallet.email,
+  ensName: wallet.ensName,
+  referralCode: wallet.referralCode,
+  secondaryAddress: wallet.secondaryAddress,
+  note: '',
+})
+
 function defaults(userId: string, profile: User, wallets: Wallet[]): CheckoutForm {
   const draft = loadDraft(userId)
   const primary = wallets.find((w) => w.slot === 'primary') ?? wallets[0]
   const wallet = wallets.find((w) => w.id === draft.walletId) ?? primary
   return {
-    collector: {
-      displayName: profile.name,
-      username: profile.username,
-      profileName: profile.name,
-      email: profile.email,
-      ensName: '',
-      referralCode: '',
-      secondaryAddress: '',
-      note: '',
-      ...draft.collector,
-    },
+    collector: { ...walletProfile(wallet, profile), ...draft.collector },
     walletId: wallet.id,
     provider: draft.provider ?? wallet.provider,
-    network: draft.network ?? 'ethereum',
+    network: draft.network ?? wallet.network,
   }
 }
 
@@ -91,9 +93,15 @@ function CheckoutFormView({
 
   // A different wallet or network needs a new connection.
   const changeWallet = (id: string) => {
-    form.setValue('walletId', id)
     const next = wallets.find((w) => w.id === id)
-    if (next) form.setValue('provider', next.provider)
+    if (!next) return
+    form.reset({
+      ...form.getValues(),
+      walletId: id,
+      provider: next.provider,
+      network: next.network,
+      collector: walletProfile(next, profile),
+    })
     reset()
   }
 

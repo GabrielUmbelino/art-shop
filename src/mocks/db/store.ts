@@ -23,7 +23,7 @@ export type OrderRecord = Order & { userId: string; idempotencyKey: string; fing
 export type WalletRecord = Wallet & { userId: string }
 
 export type Db = {
-  schemaVersion: 2
+  schemaVersion: 3
   scenario: ScenarioName
   config: MockConfig
   seq: number
@@ -51,7 +51,7 @@ function create(scenario: ScenarioName): Db {
 function load(): Db | null {
   try {
     const stored = JSON.parse(localStorage.getItem(DB_KEY) ?? 'null') as Db | null
-    return stored?.schemaVersion === 2 ? stored : null
+    return stored?.schemaVersion === 3 ? stored : null
   } catch {
     return null
   }

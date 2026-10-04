@@ -127,9 +127,10 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** `checkout.spec.ts` (E2E #6, #7, #9, #10 plus wallet reject/disconnect) green; full suite 87/87 on desktop and mobile (twice)
 
 ### Phase 6 — Profile & wallets
-- [ ] Profile: edit data, avatar upload/preview, change password (current password check, strength rules), API errors mapped to fields, persists after refresh
-- [ ] Wallets: create/edit primary and secondary wallets, address validation, primary uniqueness
-- [ ] Mobile layouts for profile, wallets, confirmation (no frame → follow the design system)
+- [x] Contracts follow the layouts: profile gets ENS name and wallet nickname (bio removed); wallets carry network and the collector profile (display/profile name, e-mail, ENS, referral code, secondary address); shared field rules in `contracts/fields.ts`; checkout prefills from the selected wallet
+- [ ] Account layout: sidebar (Dados do perfil, Carteiras, Lista de interesse, out-of-scope items as "Em breve", Sair) on desktop, scrolling tabs on mobile
+- [ ] Profile: edit data (layout fields), avatar upload/preview/remove (type and size checked), change password (current, new, confirmation), API errors mapped to fields, header and session updated, persists after refresh
+- [ ] Wallets: primary and secondary forms (layout fields), create and edit, "Igual à carteira principal", address/ENS validation, API conflicts on fields, persists after refresh
 - **Checkpoint:** E2E #8 green
 
 ### Phase 7 — Visual fidelity, responsiveness, a11y pass

@@ -1,12 +1,16 @@
 import { z } from 'zod'
 import { isoDate } from './common'
+import { displayName, email, ensName, nickname, username } from './fields'
 
 export const user = z.object({
   id: z.string(),
   name: z.string(),
   username: z.string(),
   email: z.email(),
-  bio: z.string(),
+  /** ENS name, e.g. ana.eth; empty until set in the profile. */
+  ensName: z.string(),
+  /** "Apelido da carteira" from the profile layout. */
+  walletNickname: z.string(),
   avatarUrl: z.string().nullable(),
   createdAt: isoDate,
 })
@@ -17,13 +21,6 @@ const password = z
   .min(8, 'Use pelo menos 8 caracteres')
   .regex(/[A-Za-z]/, 'Inclua uma letra')
   .regex(/\d/, 'Inclua um número')
-
-const name = z.string().trim().min(2, 'Informe seu nome de exibição')
-const username = z
-  .string()
-  .trim()
-  .regex(/^[a-z0-9_]{3,20}$/, 'Use de 3 a 20 letras minúsculas, números ou _')
-const email = z.email('Informe um e-mail válido')
 
 /** The display name starts as the username; it can be changed in the profile. */
 export const signupBody = z.object({ username, email, password })
@@ -44,10 +41,11 @@ export type Session = z.infer<typeof session>
 
 export const profileUpdateBody = z
   .object({
-    name,
+    name: displayName,
     username,
     email,
-    bio: z.string().max(280, 'Use no máximo 280 caracteres'),
+    ensName,
+    walletNickname: nickname,
     /** data: URL of the new avatar, or null to remove it. */
     avatarUrl: z
       .string()

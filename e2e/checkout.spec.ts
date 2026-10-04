@@ -38,7 +38,13 @@ async function openReview(page: Page) {
 test('full purchase from cart to confirmed receipt', async ({ page }) => {
   await prepare(page)
 
+  // Prefilled from Ana's primary wallet profile.
+  await expect(page.getByLabel('Código de indicação')).toHaveValue('KURIO2026')
+  await expect(page.getByLabel('Nome do perfil')).toHaveValue('Ana Coleções')
+
   // Layout validation and the connection requirement.
+  await page.getByLabel('Código de indicação').fill('x')
+  await page.getByLabel('Nome ENS').fill('')
   await page.getByRole('button', { name: 'Confirmar compra' }).click()
   await expect(page.getByText('Use de 4 a 12 letras ou números')).toBeVisible()
   await expect(page.getByText('Use um nome ENS válido, como nome.eth')).toBeVisible()
