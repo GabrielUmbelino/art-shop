@@ -138,8 +138,8 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] Global focus-visible outline, reduced-motion scrolling, devtools hidden under automation
 - [x] Automated accessibility audit (`pnpm a11y`: axe-core from the Lighthouse install) on every screen, desktop and mobile: 4 rule violations found and fixed (definition lists, heading order, link distinguishable only by color, duplicate landmark), now 0
 - [x] Responsive pass at 320 (400% zoom of 1280), 390, 768 and 1440 px on every route, public and private; overflow guarded by `responsive.spec.ts`. Fixed: footer grid at 320, cart and account layouts at 768 (two columns from 1024), tablet header, hero and footer
-- [~] Keyboard and focus E2E (#11): skip link, header and catalog by keyboard, dialog and sheet focus trap/return, form errors linked and focused
-- [ ] Visual regression baselines for home, detail, cart and checkout (desktop + mobile), stable data, committed
+- [x] Keyboard and focus E2E (#11, `keyboard.spec.ts`): skip link, visible focus, header search, catalog filters and cards, login dialog trap + Escape, zoom dialog and mobile sheet return focus, form errors linked (aria-describedby, role=alert) and focused
+- [~] Visual regression baselines for home, detail, cart and checkout (desktop + mobile), stable data, committed
 - [x] Out-of-scope links/actions show "Em breve" (done since Phase 2)
 - [ ] Asset substitutions and a11y deviations documented in `ARCHITECTURE.md`
 - **Checkpoint:** E2E #11 green + baselines committed
