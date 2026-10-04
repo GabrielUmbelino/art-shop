@@ -1,5 +1,6 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { HeartIcon, HouseIcon, ShoppingBasketIcon, ShoppingCartIcon, UserIcon } from 'lucide-react'
+import { HeartIcon, HouseIcon, ShoppingBasketIcon, UserIcon } from 'lucide-react'
+import { CartIcon } from '@/features/cart/cart-badge'
 
 const item =
   'flex size-12 items-center justify-center rounded-full text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring'
@@ -37,8 +38,8 @@ export function MobileNav() {
           <span className="sr-only">Mercado</span>
         </Link>
         <Link to="/cart" className={item} activeProps={active}>
-          <ShoppingCartIcon className="size-6 fill-current" />
           <span className="sr-only">Carrinho</span>
+          <CartIcon filled />
         </Link>
         <Link to="/profile" className={item} activeProps={active}>
           <UserIcon className="size-6 fill-current" />

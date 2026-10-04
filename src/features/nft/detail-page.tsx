@@ -11,17 +11,14 @@ import { Stars } from '@/components/stars'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Nft } from '@/contracts/nft'
-import { compare } from '@/lib/money'
 import { NftRow } from '@/features/catalog/nft-row'
 import { FavoriteButton } from '@/features/favorites/favorite-button'
+import { useAddToCart } from '@/features/cart/use-cart'
+import { useAddWithToast } from '@/features/cart/use-quick-add'
 import { DetailTabs } from './detail-tabs'
 import { EditionPicker } from './edition-picker'
+import { defaultEdition } from './editions'
 import { Gallery } from './gallery'
-
-/** Default edition: the cheapest one still available (falls back to the first). */
-const defaultEdition = (nft: Nft) =>
-  nft.editions.filter((e) => e.available > 0).sort((a, b) => compare(a.price, b.price))[0] ??
-  nft.editions[0]
 
 function Breadcrumb() {
   return (
@@ -83,6 +80,10 @@ function Purchase({ nft, editionId }: { nft: Nft; editionId: string | undefined 
   const [quantity, setQuantity] = useState(1)
   const max = Math.min(edition.available, nft.maxPerOrder)
   const soldOut = edition.available === 0
+  const add = useAddToCart()
+  const addWithToast = useAddWithToast()
+  const item = { nftId: nft.id, editionId: edition.id, quantity }
+  const buy = () => add.mutate(item, { onSuccess: () => void navigate({ to: '/cart' }) })
   const selectEdition = (id: string) => {
     setQuantity(1)
     void navigate({ to: '.', search: { edition: id }, replace: true, resetScroll: false })
@@ -107,7 +108,7 @@ function Purchase({ nft, editionId }: { nft: Nft; editionId: string | undefined 
       <div className="flex flex-wrap items-center justify-between gap-4 max-md:hidden">
         <QuantityStepper value={quantity} max={max} label="Quantidade" onChange={setQuantity} />
         <div className="flex gap-3">
-          <Button className="w-[115px] uppercase" disabled={soldOut}>
+          <Button className="w-[115px] uppercase" disabled={soldOut || add.isPending} onClick={buy}>
             Comprar
           </Button>
           <FavoriteButton
@@ -128,13 +129,19 @@ function Purchase({ nft, editionId }: { nft: Nft; editionId: string | undefined 
           <Price amount={edition.price} className="text-lg" />
         </div>
         <div className="flex gap-3">
-          <Button size="lg" className="h-12 flex-1 rounded-full" disabled={soldOut}>
+          <Button
+            size="lg"
+            className="h-12 flex-1 rounded-full"
+            disabled={soldOut || add.isPending}
+            onClick={buy}
+          >
             Comprar NFT
           </Button>
           <Button
             size="lg"
             className="size-12 rounded-full p-0"
-            disabled={soldOut}
+            disabled={soldOut || add.isPending}
+            onClick={() => addWithToast(item, nft.name)}
             aria-label="Adicionar ao carrinho"
           >
             <ShoppingCartIcon />

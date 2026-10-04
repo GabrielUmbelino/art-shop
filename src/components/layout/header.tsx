@@ -1,8 +1,9 @@
 import { Link, useLocation } from '@tanstack/react-router'
-import { LogInIcon, ShoppingCartIcon } from 'lucide-react'
+import { LogInIcon } from 'lucide-react'
 import { ComingSoon } from '@/components/coming-soon'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/features/auth/use-auth'
+import { CartIcon } from '@/features/cart/cart-badge'
 import { cn } from 'cn'
 import { HeaderSearch } from './header-search'
 import { UserMenu } from './user-menu'
@@ -50,8 +51,9 @@ export function Header() {
 
           <div className="flex items-center gap-6 justify-self-end">
             <HeaderSearch />
-            <Link to="/cart" aria-label="Carrinho" className="hover:text-highlight">
-              <ShoppingCartIcon className="size-6" />
+            <Link to="/cart" className="hover:text-highlight">
+              <span className="sr-only">Carrinho</span>
+              <CartIcon />
             </Link>
             {session ? (
               <UserMenu user={session.user} />
