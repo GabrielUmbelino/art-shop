@@ -1,13 +1,45 @@
 # Architecture
 
-Full write-up comes in Phase 9. Contracts and the mock environment are documented in [docs/API.md](docs/API.md).
+React + TypeScript single-page app. The REST API and the Socket.IO server are simulated in the browser by MSW; no backend is needed for development, tests or the demo. Contracts, events and the mock environment are documented in [docs/API.md](docs/API.md).
+
+## Overview
+
+| Concern | Choice |
+| --- | --- |
+| Build | Vite 8, TypeScript 7 (strict), pnpm |
+| Routing | TanStack Router (file routes, typed search params, `_authenticated` guard) |
+| Remote state | TanStack Query (queries, mutations, optimistic favorites, cache sync) |
+| HTTP | One Axios instance; responses validated against zod contracts |
+| Realtime | `socket.io-client` (websocket transport, path `/realtime/`) |
+| UI | Tailwind CSS v4, shadcn/ui adapted to the design tokens, Roboto Mono |
+| Forms | react-hook-form + zod; API field errors mapped onto fields |
+| Mocks | MSW 2 (REST through the service worker, WebSocket in the page) + `@mswjs/socket.io-binding` |
+| Tests | Playwright (Chromium, desktop and mobile), visual baselines, axe audit, Lighthouse CI |
+
+```
+src/
+  contracts/   zod schemas shared by the app and the mocks (types are inferred from them)
+  api/         Axios client, query options and API calls per resource
+  app/         query client, router, render
+  routes/      file routes (pages, search params, loaders, guards)
+  features/    auth, catalog, nft, favorites, cart, checkout, orders, profile, wallets, account
+  realtime/    socket lifecycle and event application
+  components/  shared UI; components/ui holds the adapted shadcn primitives
+  lib/         money (big.js), formatting, session and guest-cart storage, announcer
+  mocks/       mock database and seed, REST handlers, Socket.IO server, scenarios, control API, panel
+e2e/           Playwright specs and visual baselines
+```
+
+**Flow of a request.** A page reads a TanStack Query hook. The hook calls `src/api`, which goes through Axios and validates the response with the contract. In the mock environment, MSW's service worker answers the request from the mock database, applying the scenario's latency and failures.
+
+**Flow of an event.** A change in the mock database (price, stock, order status) emits `nft.updated` or `order.updated` over the mocked Socket.IO connection. `src/realtime/sync.ts` checks each event (duplicates, versions, session) and updates the query cache. The cart and order pages react to those updates.
 
 ## Data layer
 
 - **HTTP.** Every REST call goes through the Axios instance in `src/api/http.ts`. Failures become an `ApiError` with a `code`: the API's error code, `NETWORK` / `TIMEOUT` when no answer arrived, or `INVALID_RESPONSE` when a response does not match its contract (for example an HTML page instead of JSON). Responses are validated with `parse(schema, data)`; mismatches show a readable message and log the details to the console. Field errors from the API are mapped onto form fields by `applyApiError`.
 - **Cache and retries** (`src/app/query-client.ts`):
   - Data is fresh for 30 s, then refetched in the background on mount, focus and reconnect.
-  - Queries retry at most twice, and only on `TRANSIENT`, `NETWORK` or `TIMEOUT` errors. 4xx errors never retry.
+  - Queries retry at most twice, and only on `TRANSIENT`, `NETWORK`, `TIMEOUT` or `INVALID_RESPONSE` errors. 4xx errors never retry.
   - Mutations never retry automatically; each one owns its recovery.
 - **Isolation.** Private data lives under `['private', userId, ...]` query keys. On any session change, all `private` queries are removed.
 
@@ -131,4 +163,5 @@ Logged as they are introduced.
 | Accessibility | "Aplique aqui" and other inline links are underlined | Color alone did not distinguish them from text (axe `link-in-text-block`) |
 | Accessibility | The estimated-fee caption sits inside the fee value; the wish list has a visually hidden section heading | Valid definition lists and heading order (axe) |
 | Performance | Mobile Lighthouse performance is 81 (target 90) on the audited pages; desktop is 99 | The required in-browser mock layer (169 KiB JS, service worker activation, simulated API latency) sits before the API-dependent LCP images; see `lighthouse/REPORT.md` |
+| Mocks | MSW reloads the page when it starts on a page its service worker does not control. If something in the tab keeps the page uncontrolled (reported once with DevTools open; not reproduced in a clean browser), this repeats and requests reach the static server; closing the tab resets it | MSW library behaviour (`getWorkerInstance`); the app shows "Recebemos uma resposta inesperada do servidor" instead of raw errors |
 | Tooling | oxlint instead of ESLint; MSW pinned to 2.x | oxlint is the Vite template default; `@mswjs/socket.io-binding` 0.2 requires `msw@^2` |

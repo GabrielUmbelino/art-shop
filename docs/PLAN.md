@@ -155,11 +155,11 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** all targets met except mobile performance, justified in `lighthouse/REPORT.md`; full suite 120/120 (twice)
 
 ### Phase 9 — Docs & deploy
-- [ ] `README.md`: setup, env vars, fictitious credentials, scenario selection & reset, commands, how to reproduce each failure flow
-- [ ] `ARCHITECTURE.md`: REST contracts & events (link `docs/API.md`), session policy, cart state, cache/retry/sync policy, REST ↔ Socket.IO reconciliation, limitations, UX decisions, Figma deviations
-- [ ] Playwright HTML report + traces on failure configured
-- [ ] Deploy to Vercel with mocks enabled; verify direct access + refresh on every route, realtime flows working in production build
-- [ ] Final run from a clean clone: `pnpm i && pnpm typecheck && pnpm lint && pnpm test:e2e && pnpm build`
+- [x] `README.md`: setup, env vars, fictitious credentials, scenario selection & reset, commands, how to reproduce each failure flow
+- [x] `ARCHITECTURE.md`: REST contracts & events (link `docs/API.md`), session policy, cart state, cache/retry/sync policy, REST ↔ Socket.IO reconciliation, limitations, UX decisions, Figma deviations
+- [x] Playwright HTML report + traces on failure configured
+- [~] Deploy to Vercel with mocks enabled (`vercel.json` SPA rewrites ready; needs `vercel login`); verify direct access + refresh on every route, realtime flows working in production build
+- [~] Final run from a clean clone: `pnpm i && pnpm typecheck && pnpm lint && pnpm test:e2e && pnpm build`
 - **Checkpoint:** public URL + repo link ready
 
 ---
