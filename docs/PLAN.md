@@ -146,9 +146,11 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** E2E #11 green + baselines committed; full suite 120/120 on desktop and mobile
 
 ### Phase 8 — Performance & Lighthouse
-- [ ] Route-level code splitting, image sizing (`width/height`, `srcset`, modern formats, `loading="lazy"` below the fold, `fetchpriority="high"` for LCP image), font preloading, meta/SEO tags, `robots.txt`
-- [ ] Minimise MSW worker start-up cost on first paint (documented, no score-only shortcuts)
-- [ ] `lighthouserc.cjs`: home + detail, mobile & desktop, 3 runs each, against `pnpm preview` of the demo build; store HTML/JSON reports, tool versions, environment; report medians + LCP/CLS/TBT in `lighthouse/REPORT.md`; justify any miss
+- [x] `lighthouserc.cjs` + `pnpm lighthouse`: home and NFT detail, mobile and desktop, 3 runs each, against `pnpm preview` of the demo build (mocks on, default scenario); reports in `lighthouse/reports/<profile>`, medians and environment in `lighthouse/REPORT.md` (`scripts/lighthouse-report.mjs`)
+- [x] Baseline (before changes): mobile 81 / 63 performance, desktop 98 / 85; accessibility 96-100; best practices 100; SEO 92
+- [x] SEO: `robots.txt`. Accessibility: 24px carousel dot targets. CLS: gallery width on mobile (`self-start` only on desktop) and skeleton space for tabs/related NFTs (detail CLS 0.36 / 0.24 → 0)
+- [ ] Loading waterfall: download the app in parallel with the mock layer (socket.io-client loaded lazily instead of the whole app), preload the font
+- [ ] Final measurement, medians + LCP/CLS/TBT in `lighthouse/REPORT.md`, analysis of any result below target
 - **Checkpoint:** all targets met or justified
 
 ### Phase 9 — Docs & deploy

@@ -1,0 +1,74 @@
+[
+  {
+    "url": "http://localhost:4173/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/-2026_10_04_03_40_30-report.html",
+    "jsonPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/-2026_10_04_03_40_30-report.json",
+    "summary": {
+      "performance": 0.98,
+      "accessibility": 0.96,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4173/",
+    "isRepresentativeRun": false,
+    "htmlPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/-2026_10_04_03_40_57-report.html",
+    "jsonPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/-2026_10_04_03_40_57-report.json",
+    "summary": {
+      "performance": 0.98,
+      "accessibility": 0.96,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4173/nft/nft-001",
+    "isRepresentativeRun": false,
+    "htmlPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/nft_nft_001-2026_10_04_03_41_22-report.html",
+    "jsonPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/nft_nft_001-2026_10_04_03_41_22-report.json",
+    "summary": {
+      "performance": 0.86,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4173/nft/nft-001",
+    "isRepresentativeRun": false,
+    "htmlPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/nft_nft_001-2026_10_04_03_41_35-report.html",
+    "jsonPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/nft_nft_001-2026_10_04_03_41_35-report.json",
+    "summary": {
+      "performance": 0.84,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4173/",
+    "isRepresentativeRun": true,
+    "htmlPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/-2026_10_04_03_40_44-report.html",
+    "jsonPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/-2026_10_04_03_40_44-report.json",
+    "summary": {
+      "performance": 0.98,
+      "accessibility": 0.96,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  },
+  {
+    "url": "http://localhost:4173/nft/nft-001",
+    "isRepresentativeRun": true,
+    "htmlPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/nft_nft_001-2026_10_04_03_41_10-report.html",
+    "jsonPath": "/Users/gabriel/git/nft-art-shop/lighthouse/reports/desktop/nft_nft_001-2026_10_04_03_41_10-report.json",
+    "summary": {
+      "performance": 0.85,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 0.92
+    }
+  }
+]

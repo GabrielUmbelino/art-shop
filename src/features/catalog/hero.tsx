@@ -51,11 +51,13 @@ export function Hero() {
                 onClick={() => setCurrent(i)}
                 aria-label={`Destaque ${i + 1} de ${slides.length}`}
                 aria-current={i === current}
-                className={cn(
-                  'size-2 rounded-full bg-primary/50 focus-visible:outline-2 focus-visible:outline-ring',
-                  i === current && 'bg-primary',
-                )}
-              />
+                // 24px target (WCAG 2.5.8) around the designed 8px dot.
+                className="flex size-6 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-ring"
+              >
+                <span
+                  className={cn('size-2 rounded-full bg-primary/50', i === current && 'bg-primary')}
+                />
+              </button>
             ))}
           </div>
         </div>

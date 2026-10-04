@@ -158,7 +158,7 @@ function Purchase({ nft, editionId }: { nft: Nft; editionId: string | undefined 
 
 function DetailSkeleton() {
   return (
-    <div className="grid gap-12 md:grid-cols-[minmax(0,500px)_1fr]" aria-busy="true">
+    <div className="grid gap-8 md:grid-cols-[minmax(0,500px)_1fr]" aria-busy="true">
       <span className="sr-only">Carregando NFT...</span>
       <div className="flex gap-6">
         <div className="flex w-[89px] flex-col gap-3 max-md:hidden">
@@ -275,7 +275,7 @@ export function NftDetailPage({ id, edition }: { id: string; edition?: string })
         )}
       </div>
 
-      {nft && (
+      {nft ? (
         <>
           <DetailTabs nft={nft} />
           <NftRow
@@ -284,6 +284,14 @@ export function NftDetailPage({ id, edition }: { id: string; edition?: string })
             excludeId={nft.id}
           />
         </>
+      ) : (
+        !query.isError && (
+          // Reserves the space of the tabs and related NFTs, so the footer does not jump when they load.
+          <div aria-hidden="true" className="flex flex-col gap-16 md:gap-24">
+            <Skeleton className="h-[280px] w-full" />
+            <Skeleton className="h-[380px] w-full" />
+          </div>
+        )
       )}
     </div>
   )

@@ -13,7 +13,7 @@
     "format": "prettier --write .",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
-    "lighthouse": "lhci autorun",
+    "lighthouse": "pnpm build && LH_PROFILE=mobile lhci autorun && LH_PROFILE=desktop lhci autorun && node scripts/lighthouse-report.mjs",
     "a11y": "node scripts/a11y-audit.mjs"
   },
   "dependencies": {

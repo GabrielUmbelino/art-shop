@@ -35,7 +35,7 @@ export function Gallery({ images, name }: { images: string[]; name: string }) {
           </li>
         ))}
       </ul>
-      <div className="relative flex-1 self-start bg-card p-5 max-md:p-0">
+      <div className="relative flex-1 bg-card p-5 max-md:p-0 md:self-start">
         <NftImage
           src={images[current]}
           alt={name}
