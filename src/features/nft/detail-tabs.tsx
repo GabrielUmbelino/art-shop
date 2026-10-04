@@ -4,7 +4,7 @@ import type { Nft } from '@/contracts/nft'
 import { formatDate, networkLabels, shortHash } from '@/lib/format'
 
 const trigger =
-  'h-auto flex-none rounded-none border-0 border-b-2 border-transparent bg-transparent px-0 pb-2 text-base tracking-wide data-active:border-highlight data-active:bg-transparent data-active:font-bold data-active:text-highlight data-active:shadow-none'
+  'h-auto flex-none rounded-none border-0 border-b-2 border-transparent bg-transparent px-0 pb-2 text-base tracking-wide text-foreground data-active:border-highlight data-active:bg-transparent data-active:font-bold data-active:text-highlight data-active:shadow-none'
 
 export function DetailTabs({ nft }: { nft: Nft }) {
   const network = networkLabels[nft.network]

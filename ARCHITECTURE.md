@@ -47,6 +47,27 @@ Full write-up comes in Phase 9. Contracts and the mock environment are documente
   - **Refused:** keeps the cart.
   - **Confirmed:** shows the receipt, rendered only from the order snapshot. The API removes the bought units from the cart, and the client refetches it.
 
+## Accessibility and responsiveness
+
+- **Automated audit.** `pnpm a11y` runs axe-core (WCAG 2.1 A/AA and best practices) on every screen, desktop and mobile, including the signed-in pages, the review dialog and the receipt. The current result is 0 violations.
+- **Keyboard and focus.**
+  - There's a skip link, and a visible focus outline on every focusable element.
+  - Dialogs and sheets trap focus and return it to their trigger.
+  - Form errors use `role="alert"`, are linked to their field with `aria-describedby`, and the first invalid field receives focus.
+  - Mutations and realtime changes are announced through toasts and a polite live region.
+  - These behaviours are covered by `keyboard.spec.ts`.
+- **Overflow.** `responsive.spec.ts` checks every route at 320 (a 1280px screen at 400% zoom), 390, 768 and 1440px for horizontal overflow.
+- **Breakpoints.** The cart and account pages use two columns from 1024px and stack below. Tablets get a smaller hero headline and image and a two-column footer.
+- **Motion.** Skeleton shimmer, spinners and scrolling respect `prefers-reduced-motion`. The hero carousel never moves on its own.
+
+## Visual regression
+
+`visual.spec.ts` keeps baselines for home, NFT details, cart and checkout on desktop and mobile:
+
+- **Stable data:** the `fast` scenario, with the design's three cart items.
+- **Stable rendering:** animations and the caret are disabled, lazy images are loaded first, and the Query devtools are hidden under automation.
+- **Platform:** baselines are per operating system. Only macOS (`-darwin`) baselines are committed, so run `pnpm test:e2e:update` once to create them on another OS.
+
 ## Deviations, substitutions and limitations
 
 Logged as they are introduced.
@@ -89,4 +110,7 @@ Logged as they are introduced.
 | Account | Profile, wallets and the wish list share the designed sidebar; on mobile it becomes a scrolling row of tabs | No mobile design for these pages |
 | Account | One "Salvar" saves profile data and, when the password fields are filled, changes the password | The design has a single button for both sections |
 | Wallets | The primary wallet form is always shown (create or edit); "Adicionar" opens the secondary form; "Igual à carteira principal" copies the primary's profile fields | Matches the design's sections |
+| Accessibility | Required fields show the design's asterisk (hidden from screen readers) and carry `aria-required` | The asterisk alone is visual only |
+| Accessibility | "Aplique aqui" and other inline links are underlined | Color alone did not distinguish them from text (axe `link-in-text-block`) |
+| Accessibility | The estimated-fee caption sits inside the fee value; the wish list has a visually hidden section heading | Valid definition lists and heading order (axe) |
 | Tooling | oxlint instead of ESLint; MSW pinned to 2.x | oxlint is the Vite template default; `@mswjs/socket.io-binding` 0.2 requires `msw@^2` |

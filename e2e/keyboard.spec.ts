@@ -45,6 +45,9 @@ test('catalog filters and cards work with the keyboard', async ({ page, isMobile
   test.skip(isMobile, 'Desktop sidebar; the mobile sheet is covered below')
   await start(page)
   await page.goto('/')
+  // Wait for the catalog (filters with counts and cards) before tabbing through it.
+  await expect(page.locator('#mercado ul > li article')).toHaveCount(9)
+  await expect(page.getByRole('button', { name: /^Música \(\d+\)/ })).toBeVisible()
   await tabTo(page, /^Música/)
   await page.keyboard.press('Space')
   await expect(page).toHaveURL(/category=.*music/)
@@ -54,6 +57,7 @@ test('catalog filters and cards work with the keyboard', async ({ page, isMobile
   )
 
   await page.goto('/')
+  await expect(page.locator('#mercado ul > li article')).toHaveCount(9)
   await tabTo(page, 'Emerald Ape #042')
   await page.keyboard.press('Enter')
   await expect(page).toHaveURL('/nft/nft-001')

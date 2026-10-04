@@ -139,10 +139,11 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] Automated accessibility audit (`pnpm a11y`: axe-core from the Lighthouse install) on every screen, desktop and mobile: 4 rule violations found and fixed (definition lists, heading order, link distinguishable only by color, duplicate landmark), now 0
 - [x] Responsive pass at 320 (400% zoom of 1280), 390, 768 and 1440 px on every route, public and private; overflow guarded by `responsive.spec.ts`. Fixed: footer grid at 320, cart and account layouts at 768 (two columns from 1024), tablet header, hero and footer
 - [x] Keyboard and focus E2E (#11, `keyboard.spec.ts`): skip link, visible focus, header search, catalog filters and cards, login dialog trap + Escape, zoom dialog and mobile sheet return focus, form errors linked (aria-describedby, role=alert) and focused
-- [~] Visual regression baselines for home, detail, cart and checkout (desktop + mobile), stable data, committed
+- [x] Visual regression baselines (`visual.spec.ts`) for home, detail, cart (the design's three items) and checkout, desktop + mobile; stable data, animations off, lazy images settled; macOS baselines committed (`-darwin`)
 - [x] Out-of-scope links/actions show "Em breve" (done since Phase 2)
-- [ ] Asset substitutions and a11y deviations documented in `ARCHITECTURE.md`
-- **Checkpoint:** E2E #11 green + baselines committed
+- [x] Asset substitutions and a11y deviations documented in `ARCHITECTURE.md`
+- [x] Fixed on the way: active tab color (shadcn `dark:` variants outranked the design classes), flaky keyboard test waiting for the catalog
+- **Checkpoint:** E2E #11 green + baselines committed; full suite 120/120 on desktop and mobile
 
 ### Phase 8 — Performance & Lighthouse
 - [ ] Route-level code splitting, image sizing (`width/height`, `srcset`, modern formats, `loading="lazy"` below the fold, `fetchpriority="high"` for LCP image), font preloading, meta/SEO tags, `robots.txt`

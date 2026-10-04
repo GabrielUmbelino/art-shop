@@ -8,6 +8,10 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: [['html', { open: 'never' }], ['list']],
+  expect: {
+    // Visual baselines: stable data (fast scenario), no animations or caret; tiny tolerance for antialiasing.
+    toHaveScreenshot: { animations: 'disabled', caret: 'hide', maxDiffPixelRatio: 0.002 },
+  },
   use: {
     baseURL,
     trace: 'retain-on-failure',
