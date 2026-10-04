@@ -114,3 +114,36 @@ test('header shows the signed-in user and logs out from the menu', async ({ page
   await page.getByRole('menuitem', { name: 'Sair' }).click()
   await expect(page.getByRole('banner').getByRole('link', { name: 'Entrar' })).toBeVisible()
 })
+
+test('closing the dialog opened by a private page returns to the previous page', async ({
+  page,
+}) => {
+  await start(page)
+  await page.goto('/')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  // Client-side navigation to a private page: the guard opens the login dialog.
+  await page.getByRole('contentinfo').getByRole('link', { name: 'Meu perfil' }).click()
+  await expect(page).toHaveURL('/login?redirect=%2Fprofile')
+  await page.getByRole('dialog').getByRole('button', { name: 'Fechar' }).click()
+  await expect(page.getByRole('dialog')).toBeHidden()
+  await expect(page).toHaveURL('/')
+
+  // Opened directly (no history in the app): closing goes home instead of bouncing back to the guard.
+  await page.goto('/login?redirect=%2Fprofile')
+  await page.getByRole('dialog').getByRole('button', { name: 'Fechar' }).click()
+  await expect(page.getByRole('dialog')).toBeHidden()
+  await expect(page).toHaveURL('/')
+})
+
+test('closing the dialog opened from the header returns to the same page', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'The header "Entrar" button is desktop only')
+  await start(page)
+  await page.goto('/cart')
+  await page.getByRole('banner').getByRole('link', { name: 'Entrar' }).click()
+  await expect(page).toHaveURL('/login?redirect=%2Fcart')
+  await page.getByRole('dialog').getByRole('button', { name: 'Fechar' }).click()
+  await expect(page).toHaveURL('/cart')
+})

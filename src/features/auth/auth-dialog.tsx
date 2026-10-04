@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useRouter } from '@tanstack/react-router'
 import { FacebookLogo, GoogleLogo } from '@/components/provider-logos'
 import { ComingSoon } from '@/components/coming-soon'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
@@ -21,11 +21,17 @@ const copy = {
 /** Login and sign-up: a dialog over the page on desktop, a full page on mobile (as designed). */
 export function AuthDialog({ mode, search }: { mode: 'login' | 'signup'; search: AuthSearch }) {
   const navigate = useNavigate()
-  const leave = () => void navigate({ href: search.redirect ?? '/', replace: true })
+  const router = useRouter()
+  // Signed in: continue to the page that asked for it.
+  const done = () => void navigate({ href: search.redirect ?? '/', replace: true })
+  // Dismissed: go back to where the user was. Not to `redirect`, which may be a private page whose
+  // guard would open this dialog again.
+  const dismiss = () =>
+    router.history.canGoBack() ? router.history.back() : void navigate({ to: '/', replace: true })
   const tabSearch = { redirect: search.redirect }
 
   return (
-    <Dialog open onOpenChange={(open) => !open && leave()}>
+    <Dialog open onOpenChange={(open) => !open && dismiss()}>
       <DialogContent
         className={cn(
           'flex flex-col gap-6 border-0 bg-card p-0 sm:max-w-[500px]',
@@ -75,7 +81,7 @@ export function AuthDialog({ mode, search }: { mode: 'login' | 'signup'; search:
               Sua sessão expirou. Entre novamente para continuar de onde parou.
             </output>
           )}
-          {mode === 'login' ? <LoginForm onSuccess={leave} /> : <SignupForm onSuccess={leave} />}
+          {mode === 'login' ? <LoginForm onSuccess={done} /> : <SignupForm onSuccess={done} />}
         </div>
 
         <div className="flex flex-col gap-3 px-6 pb-10 md:px-20">
