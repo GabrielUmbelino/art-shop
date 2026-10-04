@@ -72,7 +72,12 @@ export const orderHandlers = [
       networkFee: quote.networkFee,
       total: quote.total,
       network: input.network,
-      wallet: { id: wallet.id, label: wallet.label, address: wallet.address },
+      wallet: {
+        id: wallet.id,
+        label: wallet.label,
+        address: wallet.address,
+        provider: input.provider,
+      },
       collector: input.collector,
       txHash: null,
       explorerUrl: null,

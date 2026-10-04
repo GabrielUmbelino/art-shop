@@ -118,13 +118,12 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - **Checkpoint:** `cart.spec.ts` (E2E #5 plus realtime in the cart) green; full suite 69/69 on desktop and mobile (twice)
 
 ### Phase 5 — Checkout, orders, realtime hardening
-- [ ] Checkout form (collector data per layout) → wallet & network selection (from saved wallets; simulate connect / reject / disconnect) → review step → submit
-- [ ] Before confirm: re-quote; any change in price/availability/coupon/fees blocks submission and asks the user to reconfirm
-- [ ] Submission: idempotency key generated per attempt and persisted with the draft; button locked while in flight; timeout → retry with **same** key → recovers same order
-- [ ] Pending order state persisted (order id) → on refresh/reconnect, fetch order via REST and resubscribe; `confirmed`/`refused` are terminal
-- [ ] Confirmation page only for confirmed orders; receipt renders the order snapshot (tx hash, items, fees, total, simulated explorer link)
-- [ ] After confirmation remove only the purchased items/quantities from the cart; on failure keep the cart intact
-- [ ] Realtime client hardening: dedupe by event id, ignore `version <= cached version`, drop events for a different user/session, reconcile active resources via REST on `connect`/`reconnect`, clean up listeners on unmount/logout
+- [x] Order contract follows the payment layout: collector (display name, username, profile name, e-mail, ENS name, referral code, optional secondary address and note) and wallet provider
+- [ ] Orders data layer: wallets query, connect/disconnect, order query, create with idempotency key persisted per attempt and own timeout; checkout draft persisted per user (survives refresh and session expiry)
+- [ ] Checkout page (desktop and mobile layouts): collector form with layout validation, saved wallet selection ("Usar outra carteira?"), provider and network, connect / reject / disconnect simulation, summary from the quote
+- [ ] Review and submit: review dialog with a fresh quote; any change (realtime or `QUOTE_CHANGED` on submit) shows the new values and requires confirming again; button locked while in flight; timeout retries with the same key and recovers the same order
+- [ ] Order page: pending (survives refresh and reconnect), refused (cart kept), confirmed receipt from the order snapshot only (tx id, date, total, wallet, lines, fee, explorer link)
+- [ ] Realtime `order.updated`: dedupe, version guard, applies only to the session's cache; confirmed orders refresh the cart (bought units removed by the API)
 - **Checkpoint:** E2E #6, #7, #9, #10 green
 
 ### Phase 6 — Profile & wallets

@@ -202,7 +202,15 @@ async function prepareCheckout(page: import('@playwright/test').Page) {
     quoteId: quote.body.id,
     network: 'ethereum',
     walletId: 'wallet-ana-1',
-    collector: { fullName: 'Ana Souza', email: 'ana@example.com' },
+    provider: 'metamask',
+    collector: {
+      displayName: 'Ana Souza',
+      username: 'ana',
+      profileName: 'Ana Coleções',
+      email: 'ana@example.com',
+      ensName: 'ana.eth',
+      referralCode: 'KURIO1',
+    },
   }
   return { token, order }
 }
@@ -226,7 +234,7 @@ test('orders: idempotency, stale quote, confirmation effects, ownership', async 
     body: order,
   })
   expect(again).toMatchObject({ status: 200, body: { id: created.body.id } })
-  const different = { ...order, collector: { ...order.collector, fullName: 'Someone Else' } }
+  const different = { ...order, collector: { ...order.collector, displayName: 'Someone Else' } }
   expect(await api(page, 'POST', '/api/orders', { token, headers, body: different })).toMatchObject(
     {
       status: 409,
