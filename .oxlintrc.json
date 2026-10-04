@@ -26,7 +26,13 @@
         "destructuredArrayIgnorePattern": "^_"
       }
     ],
-    "jsx-a11y/prefer-tag-over-role": "off"
+    "jsx-a11y/prefer-tag-over-role": "off",
+    "jsx-a11y/label-has-associated-control": [
+      "warn",
+      {
+        "depth": 4
+      }
+    ]
   },
   "overrides": [
     {

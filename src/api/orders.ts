@@ -31,7 +31,8 @@ export const ordersApi = {
       })
       return order.parse(data)
     } catch (error) {
-      if (axios.isCancel(error)) throw new ApiError('TIMEOUT', 'A confirmação do pedido está demorando.', null)
+      if (axios.isCancel(error))
+        throw new ApiError('TIMEOUT', 'A confirmação do pedido está demorando.', null)
       throw error
     } finally {
       clearTimeout(timer)
