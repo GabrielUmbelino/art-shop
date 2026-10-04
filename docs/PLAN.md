@@ -158,9 +158,9 @@ docs/             # REQUIREMENTS.md, PLAN.md, API.md (contracts & events)
 - [x] `README.md`: setup, env vars, fictitious credentials, scenario selection & reset, commands, how to reproduce each failure flow
 - [x] `ARCHITECTURE.md`: REST contracts & events (link `docs/API.md`), session policy, cart state, cache/retry/sync policy, REST ↔ Socket.IO reconciliation, limitations, UX decisions, Figma deviations
 - [x] Playwright HTML report + traces on failure configured
-- [~] Deploy to Vercel with mocks enabled (`vercel.json` SPA rewrites ready; needs `vercel login`); verify direct access + refresh on every route, realtime flows working in production build
+- [x] Deploy to Vercel with mocks enabled: https://nft-art-shop.vercel.app (`vercel.json` SPA rewrites, `.vercelignore`). Verified on production: direct access and refresh on every route, realtime price notice in the cart, full purchase confirmed through `order.updated`; verify direct access + refresh on every route, realtime flows working in production build
 - [x] Final run from a clean clone: `pnpm i --frozen-lockfile && pnpm typecheck && pnpm lint && pnpm build && CI=1 pnpm test:e2e` (123/123). Production build checked with `pnpm preview`: direct access and refresh on every route, realtime notice in the cart
-- **Checkpoint:** public URL + repo link ready
+- **Checkpoint:** public URL https://nft-art-shop.vercel.app + repo https://github.com/GabrielUmbelino/art-shop (private: make it public or share it with the evaluators)
 
 ---
 

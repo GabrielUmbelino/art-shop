@@ -1,0 +1,8 @@
+# Not needed to build the demo (Vercel installs dependencies itself)
+screens
+dist
+playwright-report
+test-results
+blob-report
+.lighthouseci
+lighthouse/reports

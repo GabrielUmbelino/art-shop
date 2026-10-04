@@ -2,7 +2,7 @@
 
 React + TypeScript front end for the NFT marketplace challenge ([requirements](docs/REQUIREMENTS.md)), built from the [Figma layout](https://www.figma.com/design/Ff0SksUi7UFtPWUO8kyNtw/Frontend-Challenge?node-id=0-1). The REST API and the Socket.IO server are simulated in the browser with MSW, in development, tests and the deployed demo.
 
-- **Live demo:** _deploy URL_
+- **Live demo:** https://nft-art-shop.vercel.app · **Repository:** https://github.com/GabrielUmbelino/art-shop
 - **How it works:** [ARCHITECTURE.md](ARCHITECTURE.md) · **API and events:** [docs/API.md](docs/API.md) · **Lighthouse:** [lighthouse/REPORT.md](lighthouse/REPORT.md) · **Design reference:** [docs/FIGMA.md](docs/FIGMA.md)
 
 ## Setup
