@@ -420,6 +420,41 @@ test('socket: nft.updated to everyone, order.updated only to its owner, duplicat
     .toBe(1)
 })
 
+test('mocks survive the browser stopping the idle service worker', async ({ page }) => {
+  await start(page)
+  // Chrome only stops an idle worker; stopping it mid-request would fail that request.
+  await page.waitForLoadState('networkidle')
+  // What Chrome does to an idle worker, e.g. in a background tab; the restarted worker has no clients.
+  const cdp = await page.context().newCDPSession(page)
+  const status = (wanted: string) =>
+    new Promise<string>((resolve) =>
+      cdp.on('ServiceWorker.workerVersionUpdated', ({ versions }) => {
+        const version = versions.find((v) => v.runningStatus === wanted)
+        if (version) resolve(version.versionId)
+      }),
+    )
+  const running = status('running')
+  const stopped = status('stopped')
+  await cdp.send('ServiceWorker.enable')
+  await cdp.send('ServiceWorker.stopWorker', { versionId: await running })
+  await stopped
+  // The tab comes back into view and announces itself; wait for the worker to confirm.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        navigator.serviceWorker.addEventListener('message', (e) => {
+          if (e.data?.type === 'MOCKING_ENABLED') resolve()
+        })
+        document.dispatchEvent(new Event('visibilitychange'))
+      }),
+  )
+  // A request that passes through gets Vite's index.html (GET) or a 404 (POST) instead.
+  const type = await page.evaluate(
+    async () => (await fetch('/api/nfts/facets')).headers.get('content-type') ?? '',
+  )
+  expect(type).toContain('application/json')
+})
+
 test('reset restores the seed', async ({ page }) => {
   await start(page)
   const token = await login(page)
